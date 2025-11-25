@@ -1,0 +1,64 @@
+# ========================================
+# PSICONUVEM - GITIGNORE
+# ========================================
+
+# --- Variáveis de Ambiente (CRÍTICO!) ---
+.env
+.env.*
+*.env
+!.env.example
+
+# --- Java/Maven ---
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# --- Spring Boot ---
+.mvn/
+mvnw
+mvnw.cmd
+spring.log
+*.log
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# --- Node/Angular ---
+node_modules/
+dist/
+.angular/
+package-lock.json
+npm-debug.log*
+yarn-error.log
+
+# --- Docker ---
+postgres_data/
+redis_data/
+localstack_data/
+
+# --- Backups ---
+backups/*.sql
+backups/*.dump
+
+# --- Secrets ---
+*.pem
+*.key
+*.p12
+*.jks
+credentials.json
+
+# --- OS ---
+Thumbs.db
+.DS_Store
+desktop.ini

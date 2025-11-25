@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: psiconuvem-api
+
+  # Define que o perfil padrão é 'dev' se nenhum for informado
+  profiles:
+    active: ${SPRING_PROFILE:dev}
+
+  # Configuração do Flyway (Migração de Banco)
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  # Formato de Datas (ISO-8601)
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+# Configurações Customizadas de Segurança (Para usarmos no código Java)
+security:
+  enabled: true # Por padrão, segurança é ligada (Prod-safe)
+
+# Configuração JWT (Segredos vêm de variáveis de ambiente)
+jwt:
+  secret: ${JWT_SECRET:SECRET_TEMPORARIO_APENAS_PARA_DEV_TROCAR_EM_PROD}
+  expiration-hours: 24
+
+# Nomes dos Buckets (Padrão, podem ser sobrescritos)
+aws:
+  s3:
+    bucket-prontuarios: psiconuvem-prontuarios
+    bucket-publico: psiconuvem-public-assets
+    bucket-backups: psiconuvem-backups

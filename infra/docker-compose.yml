@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  # Simula a AWS inteira localmente (S3, SQS, SNS, DynamoDB, Lambda)
+  localstack:
+    image: localstack/localstack:3.4
+    container_name: psiconuvem-aws
+    ports:
+      - "4566:4566"            # Gateway único da AWS Fake
+    environment:
+      - SERVICES=s3,sqs,sns,dynamodb,lambda
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      # Monta o script de inicialização para criar buckets/filas ao subir
+      - "./init-aws.sh:/etc/localstack/init/ready.d/init.sh"
+
+  # Banco de Dados Principal
+  postgres:
+    image: postgres:16-alpine
+    container_name: psiconuvem-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=psiconuvem
+      - POSTGRES_USER=${POSTGRES_USER}      # <--- Lê do .env
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # <--- Lê do .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"] # <--- Lê do .env
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Interface visual para o DynamoDB Local (Opcional, mas útil)
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    container_name: psiconuvem-dynamo-ui
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://localstack:4566
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    depends_on:
+      - localstack
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: psiconuvem-cache
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

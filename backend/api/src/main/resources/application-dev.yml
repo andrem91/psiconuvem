@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    # Conecta no Docker Local
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:psiconuvem}
+    username: ${POSTGRES_USER:psicodev}
+    password: ${POSTGRES_PASSWORD:segredo_do_banco_123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    # Mostra o SQL no console para aprendizado/debug
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # Valida se o Java bate com o Banco (Segurança)
+        ddl-auto: validate
+
+# Configuração Específica do LocalStack
+aws:
+  endpoint: http://localhost:4566  # Aponta para o Docker
+  region: us-east-1
+  credentials:
+    access-key: test
+    secret-key: test
+
+# Logs detalhados em Dev
+logging:
+  level:
+    br.com.psiconuvem: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.flywaydb: INFO
+
+# Facilitador: Desliga segurança SE você quiser testar endpoints rápidos sem token
+# (Você precisará implementar a lógica no SecurityConfig para ler isso)
+security:
+  enabled: false
