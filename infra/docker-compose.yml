@@ -20,14 +20,12 @@ services:
     container_name: psiconuvem-db
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_DB=psiconuvem
-      - POSTGRES_USER=${POSTGRES_USER}      # <--- Lê do .env
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # <--- Lê do .env
+    env_file:
+      - ../.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"] # <--- Lê do .env
+      test: ["CMD-SHELL", "pg_isready -U psicodev"] 
       interval: 5s
       timeout: 3s
       retries: 5
