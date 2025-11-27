@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = String.class))
+@FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = UUID.class))
 @Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 @Getter
 @Setter
@@ -27,7 +27,7 @@ public abstract class BaseEntity {
     private UUID id;
 
     @Column(name = "tenant_id", nullable = false, updatable = false)
-    private String tenantId;
+    private UUID tenantId;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -39,7 +39,7 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void prePersist() {
-        String current = TenantContext.getTenant();
+        UUID current = TenantContext.getTenant();
         // Proteção Crítica: Não deixa salvar dados "órfãos" sem dono
         if (current == null) {
             throw new IllegalStateException("ERRO CRÍTICO: Tentativa de salvar registro sem Tenant definido no contexto.");
