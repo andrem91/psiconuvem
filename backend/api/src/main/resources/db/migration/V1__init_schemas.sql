@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. Tabela de Tenants (As Clínicas/Psicólogos)
 CREATE TABLE tenants (
-    id VARCHAR(36) PRIMARY KEY, -- UUID do tenant
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     plan_type VARCHAR(50) NOT NULL DEFAULT 'TRIAL', -- TRIAL, PRO, PREMIUM
@@ -16,7 +16,7 @@ CREATE TABLE tenants (
 -- Tabela de Usuários (Login)
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    tenant_id VARCHAR(36) NOT NULL, -- Vínculo de Segurança (Multi-tenancy)
+    tenant_id UUID NOT NULL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,

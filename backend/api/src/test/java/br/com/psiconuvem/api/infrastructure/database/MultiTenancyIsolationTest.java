@@ -16,7 +16,6 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,6 +46,7 @@ class MultiTenancyIsolationTest {
         // Limpa banco antes de cada teste (segurança extra)
         userRepository.deleteAll();
         tenantRepository.deleteAll();
+        entityManager.flush();
     }
 
     @AfterEach
@@ -58,28 +58,24 @@ class MultiTenancyIsolationTest {
     @Test
     @DisplayName("Deve isolar dados entre diferentes tenants")
     void deveIsolarDadosEntreTenants() {
-        // 1. Criar 2 tenants (clínicas)
-        String tenantIdMaria = UUID.randomUUID().toString();
-        String tenantIdJoao = UUID.randomUUID().toString();
-
-        createTenant(tenantIdMaria, "Clínica Dra. Maria", "maria@psicologa.com");
-        createTenant(tenantIdJoao, "Clínica Dr. João", "joao@psicologo.com");
+        // 1. Criar 2 tenants (clínicas) - IDs são gerados automaticamente
+        Tenant tenantMaria = createTenant("Clínica Dra. Maria", "maria@psicologa.com");
+        Tenant tenantJoao = createTenant("Clínica Dr. João", "joao@psicologo.com");
 
         // 2. Criar usuário para tenant Maria
-        TenantContext.setTenant(tenantIdMaria);
+        TenantContext.setTenant(tenantMaria.getId()); // 🔥 Usar ID real do banco
         User userMaria = createUser("Dra. Maria Silva", "maria@psicologa.com");
 
         // 3. Criar usuário para tenant João
-        TenantContext.setTenant(tenantIdJoao);
+        TenantContext.setTenant(tenantJoao.getId()); // 🔥 Usar ID real do banco
         User userJoao = createUser("Dr. João Silva", "joao@psicologo.com");
 
         // ⚡ CRÍTICO: Força escrita no banco e limpa cache Hibernate
-        // Sem isso, o teste pode passar mesmo se o filtro não funcionar!
         entityManager.flush();
         entityManager.clear();
 
         // 4. VALIDAÇÃO: Tenant Maria vê apenas seus dados
-        TenantContext.setTenant(tenantIdMaria);
+        TenantContext.setTenant(tenantMaria.getId());
         List<User> usuariosClinicaMaria = userRepository.findAll();
 
         assertThat(usuariosClinicaMaria).hasSize(1);
@@ -87,7 +83,7 @@ class MultiTenancyIsolationTest {
         assertThat(usuariosClinicaMaria.get(0).getEmail()).isEqualTo("maria@psicologa.com");
 
         // 5. VALIDAÇÃO: Tenant João vê apenas seus dados
-        TenantContext.setTenant(tenantIdJoao);
+        TenantContext.setTenant(tenantJoao.getId());
         List<User> usuariosClinicaJoao = userRepository.findAll();
 
         assertThat(usuariosClinicaJoao).hasSize(1);
@@ -121,9 +117,8 @@ class MultiTenancyIsolationTest {
 
     // ========== MÉTODOS AUXILIARES ==========
 
-    private Tenant createTenant(String id, String name, String email) {
+    private Tenant createTenant(String name, String email) {
         Tenant tenant = new Tenant();
-        tenant.setId(id);
         tenant.setName(name);
         tenant.setEmail(email);
         return tenantRepository.save(tenant);
