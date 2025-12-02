@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "./generated"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -58,7 +51,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  password      String?   // Hash bcrypt para credentials
+  password      String? // Hash bcrypt para credentials
 
   accounts Account[]
   sessions Session[]
@@ -76,17 +69,17 @@ model Psychologist {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Dados profissionais
-  crp         String  @unique
-  slug        String  @unique
-  bio         String? @db.Text
+  crp         String   @unique
+  slug        String   @unique
+  bio         String?  @db.Text
   photo       String?
   phone       String?
   specialties String[]
 
   // Plano e Trial
-  plan           String    @default("TRIAL") // TRIAL | ESSENTIAL | PRO | PREMIUM
-  trialEndsAt    DateTime?
-  asaasCustomerId String?  @unique
+  plan            String    @default("TRIAL") // TRIAL | ESSENTIAL | PRO | PREMIUM
+  trialEndsAt     DateTime?
+  asaasCustomerId String?   @unique
 
   // Relações
   patients      Patient[]
@@ -162,8 +155,8 @@ model ClinicalNote {
 
   sessionDate   DateTime
   sessionNumber Int
-  duration      Int      // minutos
-  sessionType   String   // presencial | online
+  duration      Int // minutos
+  sessionType   String // presencial | online
   content       String   @db.Text // ⚠️ CRIPTOGRAFADO (AES-256-GCM)
 
   // Relações
