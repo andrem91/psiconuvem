@@ -48,7 +48,14 @@ export function decrypt(encrypted: string): string {
     throw new Error('Invalid encrypted data format')
   }
 
-  const [ivHex, authTagHex, ciphertext] = parts
+  const ivHex = parts[0]
+  const authTagHex = parts[1]
+  const ciphertext = parts[2]
+  
+  if (!ivHex || !authTagHex || !ciphertext) {
+    throw new Error('Invalid encrypted data format')
+  }
+  
   const iv = Buffer.from(ivHex, 'hex')
   const authTag = Buffer.from(authTagHex, 'hex')
 

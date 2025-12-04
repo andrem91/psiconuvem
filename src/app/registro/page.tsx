@@ -12,7 +12,7 @@ export default function RegistroPage() {
 
     useEffect(() => {
         if (state.success) {
-            router.push('/login?registered=true')
+            router.push('/confirmar-email')
         }
     }, [state.success, router])
 
@@ -49,7 +49,7 @@ export default function RegistroPage() {
                                 type="text"
                                 autoComplete="name"
                                 required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Dra. Maria Silva"
                             />
                             {state.errors?.name && (
@@ -67,7 +67,7 @@ export default function RegistroPage() {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="seu@email.com"
                             />
                             {state.errors?.email && (
@@ -84,7 +84,7 @@ export default function RegistroPage() {
                                 name="crp"
                                 type="text"
                                 required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="06/123456"
                             />
                             {state.errors?.crp && (
@@ -105,7 +105,7 @@ export default function RegistroPage() {
                                 type="password"
                                 autoComplete="new-password"
                                 required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="••••••••"
                             />
                             {state.errors?.password && (

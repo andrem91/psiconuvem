@@ -1,120 +1,114 @@
-import { auth, signOut } from '@/auth'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
+import Link from 'next/link'
+import { Users, Calendar, FileText } from 'lucide-react'
 
 export default async function DashboardPage() {
-    const session = await auth()
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    if (!session?.user) {
-        redirect('/login')
-    }
+    if (!user) redirect('/login')
 
-    const psychologist = await prisma.psychologist.findUnique({
-        where: { userId: session.user.id },
-        include: {
-            user: true,
-            _count: {
-                select: {
-                    patients: true,
-                    appointments: true,
-                },
-            },
-        },
-    })
+    const { data: psychologist } = await supabase
+        .from('Psychologist')
+        .select('*, patients:Patient(count), appointments:Appointment(count)')
+        .eq('userId', user.id)
+        .single()
 
     if (!psychologist) {
-        redirect('/login')
+        return (
+            <div className="text-center py-12">
+                <p className="text-red-600">Erro: Perfil de psicólogo não encontrado.</p>
+            </div>
+        )
     }
 
-    const trialDaysLeft = psychologist.trialEndsAt
-        ? Math.max(
-            0,
-            Math.ceil(
-                (psychologist.trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-            )
-        )
-        : 0
-
     return (
-        <div className="min-h-screen bg-gray-50">
-            <nav className="bg-white shadow">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 items-center">
-                        <h1 className="text-xl font-bold text-gray-900">PsicoNuvem</h1>
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-600">
-                                Olá, {psychologist.user.name}
-                            </span>
-                            <form
-                                action={async () => {
-                                    'use server'
-                                    await signOut({ redirectTo: '/login' })
-                                }}
-                            >
-                                <button
-                                    type="submit"
-                                    className="text-sm text-red-600 hover:text-red-800"
-                                >
-                                    Sair
-                                </button>
-                            </form>
+        <div>
+            {/* Boas-vindas */}
+            <div className="mb-8">
+                <h1 className="text-2xl font-bold text-gray-900">
+                    Bem-vindo(a), {user.user_metadata?.name || 'Psicólogo'}!
+                </h1>
+                <p className="text-gray-600 mt-1">
+                    Aqui está o resumo da sua clínica.
+                </p>
+            </div>
+
+            {/* Cards de Estatísticas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <Link
+                    href="/dashboard/pacientes"
+                    className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-indigo-100 rounded-lg">
+                            <Users className="w-6 h-6 text-indigo-600" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium text-gray-500">Pacientes</h3>
+                            <p className="text-3xl font-bold text-gray-900">
+                                {psychologist.patients?.[0]?.count || 0}
+                            </p>
                         </div>
                     </div>
-                </div>
-            </nav>
+                </Link>
 
-            <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {/* Trial Banner */}
-                {psychologist.plan === 'TRIAL' && (
-                    <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-blue-800">
-                            🎉 Você está no período de teste.{' '}
-                            <strong>{trialDaysLeft} dias restantes.</strong>
-                        </p>
+                <Link
+                    href="/dashboard/agenda"
+                    className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-green-100 rounded-lg">
+                            <Calendar className="w-6 h-6 text-green-600" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium text-gray-500">Consultas</h3>
+                            <p className="text-3xl font-bold text-gray-900">
+                                {psychologist.appointments?.[0]?.count || 0}
+                            </p>
+                        </div>
                     </div>
-                )}
+                </Link>
 
-                {/* Cards de estatísticas */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Pacientes</h3>
-                        <p className="text-3xl font-bold text-gray-900">
-                            {psychologist._count.patients}
-                        </p>
+                <Link
+                    href="/dashboard/prontuarios"
+                    className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-purple-100 rounded-lg">
+                            <FileText className="w-6 h-6 text-purple-600" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium text-gray-500">Prontuários</h3>
+                            <p className="text-3xl font-bold text-gray-900">0</p>
+                        </div>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Consultas</h3>
-                        <p className="text-3xl font-bold text-gray-900">
-                            {psychologist._count.appointments}
-                        </p>
-                    </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Plano</h3>
-                        <p className="text-3xl font-bold text-gray-900">
+                </Link>
+            </div>
+
+            {/* Info do Plano */}
+            <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Seu Plano</h2>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
                             {psychologist.plan}
-                        </p>
+                        </span>
+                        {psychologist.trialEndsAt && (
+                            <p className="text-sm text-gray-500 mt-2">
+                                Trial expira em: {new Date(psychologist.trialEndsAt).toLocaleDateString('pt-BR')}
+                            </p>
+                        )}
                     </div>
+                    <Link
+                        href="/dashboard/configuracoes"
+                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                    >
+                        Gerenciar plano →
+                    </Link>
                 </div>
-
-                {/* Info do perfil */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                        Seu Perfil
-                    </h2>
-                    <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <dt className="text-sm text-gray-500">CRP</dt>
-                            <dd className="text-gray-900">{psychologist.crp}</dd>
-                        </div>
-                        <div>
-                            <dt className="text-sm text-gray-500">URL do seu site</dt>
-                            <dd className="text-blue-600">
-                                psiconuvem.com/p/{psychologist.slug}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </main>
+            </div>
         </div>
     )
 }

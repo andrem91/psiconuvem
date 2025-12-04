@@ -57,3 +57,6 @@ postgres_data
 pgadmin_data
 
 /src/generated/prisma
+
+# Documentação local (não versionar)
+codigo-fonte.md
