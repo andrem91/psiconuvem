@@ -33,13 +33,39 @@ export const patientSchema = z.object({
   
   // Telefone brasileiro - valida formato e remove caracteres especiais
   phone: z.string()
+    .min(10, 'Telefone muito curto')
+    .max(20, 'Telefone muito longo')
     .regex(
-      /^(\+55\s?)?(\(?\d{2}\)?\s?)?\d{4,5}-?\d{4}$/,
-      'Telefone inválido (formato: (XX) XXXXX-XXXX)'
+      /^(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\s?)?\d{4}-?\d{4}$/,
+      'Telefone inválido (formato: (XX) 9XXXX-XXXX ou (XX) XXXX-XXXX)'
     )
-    .transform(phone => phone.replace(/\D/g, '')), // Remove caracteres não numéricos
+    .transform(phone => {
+      // Remove tudo exceto dígitos
+      const cleaned = phone.replace(/\D/g, '')
+      // Remove código do país se presente
+      return cleaned.startsWith('55') ? cleaned.slice(2) : cleaned
+    })
+    .refine((phone) => phone.length === 10 || phone.length === 11, {
+      message: 'Telefone deve ter 10 ou 11 dígitos'
+    }),
   
-  birthdate: z.string().optional(),
+  
+  // Birthdate - valida formato e ranges realistas
+  birthdate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de data inválido (YYYY-MM-DD)')
+    .refine((date) => {
+      const birthDate = new Date(date + 'T00:00:00.000Z') // Parse as UTC midnight
+      const today = new Date()
+      const minDate = new Date('1900-01-01T00:00:00.000Z')
+      return birthDate <= today && birthDate >= minDate
+    }, {
+      message: 'Data de nascimento inválida (deve estar entre 01/01/1900 e hoje)'
+    })
+    .optional()
+    .or(z.literal(''))
+    .transform(val => val || undefined),
+  
   lgpdConsent: z.boolean().default(false),
 })
 

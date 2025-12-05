@@ -6,15 +6,25 @@ import { headers } from 'next/headers'
  * 
  * @returns IP do cliente ou null se não encontrado
  */
+
+const IP_HEADERS = [
+  'x-real-ip',
+  'x-forwarded-for',
+  'cf-connecting-ip',
+] as const
+
 export async function getClientIp(): Promise<string | null> {
   const headersList = await headers()
   
-  // Tentar diferentes headers (dependendo do proxy/CDN)
-  const ip = 
-    headersList.get('x-real-ip') ||
-    headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    headersList.get('cf-connecting-ip') || // Cloudflare
-    null
+  for (const header of IP_HEADERS) {
+    const value = headersList.get(header)
+    if (value) {
+      // x-forwarded-for pode conter múltiplos IPs separados por vírgula
+      return header === 'x-forwarded-for' 
+        ? value.split(',')[0]?.trim() || null 
+        : value
+    }
+  }
   
-  return ip
+  return null
 }

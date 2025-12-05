@@ -100,7 +100,7 @@ export async function createPatient(
             name,
             email: email || null,
             phone,
-            birthdate: birthdate ? new Date(birthdate).toISOString() : null,
+            birthdate: birthdate || null,
             lgpdConsent,
             lgpdConsentDate: lgpdConsent ? new Date().toISOString() : null,
             lgpdConsentIp: ip,
@@ -161,7 +161,7 @@ export async function updatePatient(
         name,
         email: email || null,
         phone,
-        birthdate: birthdate ? new Date(birthdate).toISOString() : null,
+        birthdate: birthdate || null,
         lgpdConsent,
         lgpdConsentDate: lgpdConsent && !existingPatient.lgpdConsent 
             ? new Date().toISOString() 

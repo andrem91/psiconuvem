@@ -60,3 +60,5 @@ pgadmin_data
 
 # Documentação local (não versionar)
 codigo-fonte.md
+/docs-referencia/*
+/generate-codigo-fonte.sh
