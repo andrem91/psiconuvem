@@ -8,6 +8,7 @@ import { VALID_DURATIONS } from '@/lib/validations/appointment'
 type Patient = {
     id: string
     name: string
+    paymentModel?: string | null
 }
 
 type AppointmentFormProps = {
@@ -33,6 +34,8 @@ export function AppointmentForm({ patients }: AppointmentFormProps) {
     const [date, setDate] = useState('')
     const [time, setTime] = useState('')
     const [type, setType] = useState<'presencial' | 'online'>('presencial')
+    const [selectedPatientId, setSelectedPatientId] = useState('')
+    const [billAsSession, setBillAsSession] = useState(false)
 
     // Get today's date in YYYY-MM-DD format for min attribute
     const today = new Date().toISOString().split('T')[0]
@@ -41,6 +44,11 @@ export function AppointmentForm({ patients }: AppointmentFormProps) {
     const scheduledAt = date && time
         ? new Date(`${date}T${time}`).toISOString()
         : ''
+
+    // Find selected patient to check payment model
+    const selectedPatient = patients.find(p => p.id === selectedPatientId)
+    const isMonthlyPlan = selectedPatient?.paymentModel === 'MONTHLY_PLAN'
+    const shouldShowPrice = !selectedPatient || selectedPatient.paymentModel === 'PER_SESSION' || !selectedPatient.paymentModel || billAsSession
 
     return (
         <form action={formAction} className="space-y-6">
@@ -81,6 +89,7 @@ export function AppointmentForm({ patients }: AppointmentFormProps) {
                     name="patientId"
                     className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     required
+                    onChange={(e) => setSelectedPatientId(e.target.value)}
                 >
                     <option value="">Selecione um paciente</option>
                     {patients.map((patient) => (
@@ -230,6 +239,66 @@ export function AppointmentForm({ patients }: AppointmentFormProps) {
                     </label>
                 </div>
             </div>
+
+            {/* Session Price - Only for PER_SESSION payment model */}
+            {shouldShowPrice && (
+                <div>
+                    <label
+                        htmlFor="sessionPrice"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        💰 Valor da Sessão (R$) <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        name="sessionPrice"
+                        id="sessionPrice"
+                        defaultValue="150.00"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        required
+                    />
+                    <p className="mt-1 text-sm text-gray-500">
+                        Valor que será cobrado por esta sessão
+                    </p>
+                    {state.errors?.sessionPrice && (
+                        <p className="text-sm text-red-600">{state.errors.sessionPrice[0]}</p>
+                    )}
+                </div>
+            )}
+            {!shouldShowPrice && (
+                <>
+                    <input type="hidden" name="sessionPrice" value="0" />
+                    <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
+                        <p className="text-sm text-blue-800">
+                            ℹ️ Este paciente possui <strong>Plano Mensal</strong>.
+                            O valor é cobrado mensalmente, não por sessão.
+                        </p>
+                    </div>
+                </>
+            )}
+
+            {/* Bill as Session option - Only for monthly plan patients */}
+            {isMonthlyPlan && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                    <div className="flex items-start">
+                        <input
+                            type="checkbox"
+                            id="billAsSession"
+                            name="billAsSession"
+                            checked={billAsSession}
+                            onChange={(e) => setBillAsSession(e.target.checked)}
+                            className="mt-1 h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                        />
+                        <label htmlFor="billAsSession" className="ml-3 text-sm text-amber-800">
+                            <strong>📌 Cobrar como sessão avulsa?</strong>
+                            <br />
+                            <span className="text-amber-700">Marque se esta é uma sessão extra além do plano mensal</span>
+                        </label>
+                    </div>
+                </div>
+            )}
 
             {/* Notes */}
             <div>

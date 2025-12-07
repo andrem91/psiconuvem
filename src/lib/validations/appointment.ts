@@ -44,6 +44,8 @@ export const createAppointmentSchema = z.object({
   type: z.nativeEnum(AppointmentType),
   notes: z.string().max(5000, 'Observações muito longas').optional(),
   telepsyConsent: z.boolean().default(false),
+  sessionPrice: z.coerce.number().nonnegative('Valor deve ser maior ou igual a zero'),
+  billAsSession: z.boolean().default(false),
 })
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>

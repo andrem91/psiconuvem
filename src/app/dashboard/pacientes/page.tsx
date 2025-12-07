@@ -1,7 +1,7 @@
 import { getPatients } from '@/lib/actions/patients'
 import Link from 'next/link'
-import { Plus, Pencil, Phone, Mail } from 'lucide-react'
-import { DeletePatientButton } from './_components/delete-button'
+import { Plus, Phone, Mail } from 'lucide-react'
+import { PaymentModelBadge } from '@/components/PaymentModelBadge'
 
 export default async function PacientesPage() {
     const patients = await getPatients()
@@ -62,12 +62,24 @@ export default async function PacientesPage() {
                             {patients.map((patient) => (
                                 <tr key={patient.id} className="hover:bg-gray-50">
                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
-                                        <div className="font-medium text-gray-900">{patient.name}</div>
-                                        {patient.birthdate && (
-                                            <div className="text-sm text-gray-500">
-                                                {new Date(patient.birthdate).toLocaleDateString('pt-BR')}
+                                        <div className="flex items-center gap-2">
+                                            <div>
+                                                <Link
+                                                    href={`/dashboard/pacientes/${patient.id}`}
+                                                    className="font-medium text-gray-900 hover:text-indigo-600"
+                                                >
+                                                    {patient.name}
+                                                </Link>
+                                                {patient.birthdate && (
+                                                    <div className="text-sm text-gray-500">
+                                                        {new Date(patient.birthdate).toLocaleDateString('pt-BR')}
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
+                                            {patient.paymentModel && (
+                                                <PaymentModelBadge model={patient.paymentModel as any} />
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
                                         <div className="flex flex-col gap-1">
@@ -97,16 +109,15 @@ export default async function PacientesPage() {
                                         )}
                                     </td>
                                     <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                        <div className="flex justify-end gap-4">
-                                            <Link
-                                                href={`/dashboard/pacientes/${patient.id}`}
-                                                className="text-indigo-600 hover:text-indigo-900 flex items-center gap-1"
-                                            >
-                                                <Pencil className="w-4 h-4" />
-                                                Editar
-                                            </Link>
-                                            <DeletePatientButton id={patient.id} name={patient.name} />
-                                        </div>
+                                        <Link
+                                            href={`/dashboard/pacientes/${patient.id}`}
+                                            className="inline-flex items-center text-indigo-600 hover:text-indigo-900"
+                                        >
+                                            Detalhes
+                                            <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}

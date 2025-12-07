@@ -1,6 +1,7 @@
 import { getAppointments } from '@/lib/actions/appointments'
 import { formatDate, formatTime } from '@/lib/utils/date'
 import { AppointmentStatusBadge } from '@/components/AppointmentStatusBadge'
+import { PaymentBadge } from '@/components/PaymentBadge'
 import { AppointmentStatus } from '@/lib/validations/appointment'
 import Link from 'next/link'
 
@@ -208,9 +209,23 @@ export default async function AgendaPage() {
                                         <p className="mt-1 text-sm font-medium text-gray-900">
                                             {appointment.patient?.name || 'Paciente sem nome'}
                                         </p>
-                                        <p className="text-sm text-gray-500">
-                                            {appointment.duration} minutos • {appointment.type}
-                                        </p>
+                                        <div className="mt-1 flex items-center gap-2">
+                                            <p className="text-sm text-gray-500">
+                                                {appointment.duration} minutos • {appointment.type}
+                                            </p>
+                                            {/* Badge de pagamento - APENAS para pacientes PER_SESSION */}
+                                            {appointment.patient?.paymentModel === 'PER_SESSION' &&
+                                                appointment.sessionPrice != null &&
+                                                appointment.paymentStatus && (
+                                                    <PaymentBadge status={appointment.paymentStatus as any} />
+                                                )}
+                                            {/* Para pacientes mensais, mostrar badge informativa */}
+                                            {appointment.patient?.paymentModel === 'MONTHLY_PLAN' && (
+                                                <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+                                                    📅 Plano Mensal
+                                                </span>
+                                            )}
+                                        </div>
                                         {appointment.meetLink && (
                                             <a
                                                 href={appointment.meetLink}
@@ -235,6 +250,17 @@ export default async function AgendaPage() {
                                             </a>
                                         )}
                                     </div>
+
+                                    {/* Botão Detalhes */}
+                                    <Link
+                                        href={`/dashboard/agenda/${appointment.id}`}
+                                        className="inline-flex items-center text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                                    >
+                                        Detalhes
+                                        <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </Link>
                                 </div>
                             </div>
                         ))

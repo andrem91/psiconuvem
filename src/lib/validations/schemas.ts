@@ -31,19 +31,19 @@ export const patientSchema = z.object({
     .or(z.literal(''))
     .transform(val => val || undefined),
   
-  // Telefone brasileiro - valida formato e remove caracteres especiais
+  // Telefone brasileiro - aceita vários formatos
   phone: z.string()
     .min(10, 'Telefone muito curto')
     .max(20, 'Telefone muito longo')
     .regex(
-      /^(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\s?)?\d{4}-?\d{4}$/,
-      'Telefone inválido (formato: (XX) 9XXXX-XXXX ou (XX) XXXX-XXXX)'
+      /^(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\s?)?\d{4,5}-?\d{4}$|^\d{10,11}$/,
+      'Telefone inválido (formato: (XX) XXXXX-XXXX ou XXXXXXXXXXX)'
     )
     .transform(phone => {
       // Remove tudo exceto dígitos
       const cleaned = phone.replace(/\D/g, '')
       // Remove código do país se presente
-      return cleaned.startsWith('55') ? cleaned.slice(2) : cleaned
+      return cleaned.startsWith('55') && cleaned.length > 11 ? cleaned.slice(2) : cleaned
     })
     .refine((phone) => phone.length === 10 || phone.length === 11, {
       message: 'Telefone deve ter 10 ou 11 dígitos'

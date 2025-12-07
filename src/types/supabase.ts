@@ -1,4 +1,3 @@
-
 export type Json =
   | string
   | number
@@ -38,45 +37,66 @@ export type Database = {
       Appointment: {
         Row: {
           createdAt: string
+          deletedAt: string | null
           duration: number
           id: string
           meetLink: string | null
           notes: string | null
           patientId: string
+          paymentDate: string | null
+          paymentMethod: string | null
+          paymentNotes: string | null
+          paymentStatus: string | null
           psychologistId: string
           scheduledAt: string
+          sessionPrice: number | null
           status: string
           telepsyConsent: boolean
           type: string
           updatedAt: string
+          billAsSession: boolean
         }
         Insert: {
           createdAt?: string
+          deletedAt?: string | null
           duration?: number
           id: string
           meetLink?: string | null
           notes?: string | null
           patientId: string
+          paymentDate?: string | null
+          paymentMethod?: string | null
+          paymentNotes?: string | null
+          paymentStatus?: string | null
           psychologistId: string
           scheduledAt: string
+          sessionPrice?: number | null
           status?: string
           telepsyConsent?: boolean
           type?: string
           updatedAt: string
+          billAsSession?: boolean
         }
         Update: {
           createdAt?: string
+          deletedAt?: string | null
           duration?: number
           id?: string
           meetLink?: string | null
           notes?: string | null
           patientId?: string
+          paymentDate?: string | null
+          paymentMethod?: string | null
+          paymentNotes?: string | null
+          paymentStatus?: string | null
           psychologistId?: string
           scheduledAt?: string
+          sessionPrice?: number | null
           status?: string
           telepsyConsent?: boolean
           type?: string
           updatedAt?: string
+          billAsSession?: boolean
         }
         Relationships: [
           {
@@ -152,48 +172,226 @@ export type Database = {
           },
         ]
       }
+      FinancialSettings: {
+        Row: {
+          acceptedPaymentMethods: string[] | null
+          createdAt: string | null
+          currency: string | null
+          defaultMonthlyPrice: number | null
+          defaultPaymentDueDay: number | null
+          defaultSessionPrice: number
+          id: string
+          psychologistId: string
+          updatedAt: string | null
+        }
+        Insert: {
+          acceptedPaymentMethods?: string[] | null
+          createdAt?: string | null
+          currency?: string | null
+          defaultMonthlyPrice?: number | null
+          defaultPaymentDueDay?: number | null
+          defaultSessionPrice?: number
+          id?: string
+          psychologistId: string
+          updatedAt?: string | null
+        }
+        Update: {
+          acceptedPaymentMethods?: string[] | null
+          createdAt?: string | null
+          currency?: string | null
+          defaultMonthlyPrice?: number | null
+          defaultPaymentDueDay?: number | null
+          defaultSessionPrice?: number
+          id?: string
+          psychologistId?: string
+          updatedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "FinancialSettings_psychologistId_fkey"
+            columns: ["psychologistId"]
+            isOneToOne: true
+            referencedRelation: "Psychologist"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      MonthlyInvoice: {
+        Row: {
+          amount: number
+          createdAt: string | null
+          deletedAt: string | null
+          dueDate: string
+          id: string
+          notes: string | null
+          paidAt: string | null
+          patientId: string
+          paymentMethod: string | null
+          psychologistId: string
+          referenceMonth: string
+          status: string | null
+          updatedAt: string | null
+        }
+        Insert: {
+          amount: number
+          createdAt?: string | null
+          deletedAt?: string | null
+          dueDate: string
+          id?: string
+          notes?: string | null
+          paidAt?: string | null
+          patientId: string
+          paymentMethod?: string | null
+          psychologistId: string
+          referenceMonth: string
+          status?: string | null
+          updatedAt?: string | null
+        }
+        Update: {
+          amount?: number
+          createdAt?: string | null
+          deletedAt?: string | null
+          dueDate?: string
+          id?: string
+          notes?: string | null
+          paidAt?: string | null
+          patientId?: string
+          paymentMethod?: string | null
+          psychologistId?: string
+          referenceMonth?: string
+          status?: string | null
+          updatedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "MonthlyInvoice_patientId_fkey"
+            columns: ["patientId"]
+            isOneToOne: false
+            referencedRelation: "Patient"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "MonthlyInvoice_psychologistId_fkey"
+            columns: ["psychologistId"]
+            isOneToOne: false
+            referencedRelation: "Psychologist"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      FinancialRecord: {
+        Row: {
+          amount: number
+          category: "SESSION" | "MONTHLY" | "OTHER"
+          createdAt: string
+          date: string
+          deletedAt: string | null
+          description: string
+          id: string
+          patientId: string | null
+          psychologistId: string
+          status: "PENDING" | "PAID" | "OVERDUE"
+          type: "INCOME" | "EXPENSE"
+          updatedAt: string
+        }
+        Insert: {
+          amount: number
+          category: "SESSION" | "MONTHLY" | "OTHER"
+          createdAt?: string
+          date: string
+          deletedAt?: string | null
+          description: string
+          id?: string
+          patientId?: string | null
+          psychologistId: string
+          status?: "PENDING" | "PAID" | "OVERDUE"
+          type: "INCOME" | "EXPENSE"
+          updatedAt?: string
+        }
+        Update: {
+          amount?: number
+          category?: "SESSION" | "MONTHLY" | "OTHER"
+          createdAt?: string
+          date?: string
+          deletedAt?: string | null
+          description?: string
+          id?: string
+          patientId?: string | null
+          psychologistId?: string
+          status?: "PENDING" | "PAID" | "OVERDUE"
+          type?: "INCOME" | "EXPENSE"
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "FinancialRecord_patientId_fkey"
+            columns: ["patientId"]
+            isOneToOne: false
+            referencedRelation: "Patient"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Patient: {
         Row: {
           birthdate: string | null
           createdAt: string
           deletedAt: string | null
           email: string | null
+          financialNotes: string | null
           id: string
           lgpdConsent: boolean
           lgpdConsentDate: string | null
           lgpdConsentIp: string | null
+          monthlyPlanPrice: number | null
           name: string
+          paymentDueDay: number | null
+          paymentModel: string | null
           phone: string
           psychologistId: string
+          sessionsPerMonth: number | null
           updatedAt: string
+          planStartDate: string | null
         }
         Insert: {
           birthdate?: string | null
           createdAt?: string
           deletedAt?: string | null
           email?: string | null
+          financialNotes?: string | null
           id: string
           lgpdConsent?: boolean
           lgpdConsentDate?: string | null
           lgpdConsentIp?: string | null
+          monthlyPlanPrice?: number | null
           name: string
+          paymentDueDay?: number | null
+          paymentModel?: string | null
           phone: string
           psychologistId: string
+          sessionsPerMonth?: number | null
           updatedAt: string
+          planStartDate?: string | null
         }
         Update: {
           birthdate?: string | null
           createdAt?: string
           deletedAt?: string | null
           email?: string | null
+          financialNotes?: string | null
           id?: string
           lgpdConsent?: boolean
           lgpdConsentDate?: string | null
           lgpdConsentIp?: string | null
+          monthlyPlanPrice?: number | null
           name?: string
+          paymentDueDay?: number | null
+          paymentModel?: string | null
           phone?: string
           psychologistId?: string
+          sessionsPerMonth?: number | null
           updatedAt?: string
+          planStartDate?: string | null
         }
         Relationships: [
           {
@@ -258,6 +456,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_appointment_conflict: {
+        Args: {
+          p_duration: number
+          p_exclude_id?: string
+          p_psychologist_id: string
+          p_scheduled_at: string
+        }
+        Returns: boolean
+      }
       get_current_psychologist_id: { Args: never; Returns: string }
     }
     Enums: {

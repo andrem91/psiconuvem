@@ -20,6 +20,7 @@ export type AppointmentState = {
     duration?: string[]
     type?: string[]
     notes?: string[]
+    sessionPrice?: string[]
     _form?: string[]
   }
   success?: boolean
@@ -58,7 +59,7 @@ async function hasConflict(
     p_psychologist_id: psychologistId,
     p_scheduled_at: scheduledAt.toISOString(),
     p_duration: duration,
-    p_exclude_id: excludeId || null,
+    p_exclude_id: excludeId || undefined,
   })
 
   if (error) {
@@ -92,11 +93,13 @@ export async function getAppointments(
         id,
         name,
         phone,
-        email
+        email,
+        paymentModel
       )
     `,
     )
     .eq('psychologistId', psychologistId)
+    .is('deletedAt', null) // Exclude soft-deleted appointments
 
   // Apply filters
   if (filters?.startDate) {
@@ -177,6 +180,7 @@ export async function getAppointmentById(id: string) {
     )
     .eq('id', id)
     .eq('psychologistId', psychologistId)
+    .is('deletedAt', null) // Exclude soft-deleted
     .single()
 
   if (error && error.code !== 'PGRST116') {
@@ -204,6 +208,8 @@ export async function createAppointment(
     type: formData.get('type') || 'presencial',
     notes: formData.get('notes') || undefined,
     telepsyConsent: formData.get('telepsyConsent') === 'on',
+    sessionPrice: parseFloat(formData.get('sessionPrice') as string) || 0,
+    billAsSession: formData.get('billAsSession') === 'on',
   })
 
   if (!validatedFields.success) {
@@ -212,7 +218,7 @@ export async function createAppointment(
     }
   }
 
-  const { patientId, scheduledAt, duration, type, notes, telepsyConsent } =
+  const { patientId, scheduledAt, duration, type, notes, telepsyConsent, sessionPrice, billAsSession } =
     validatedFields.data
 
   // Check for conflicts
@@ -247,10 +253,18 @@ export async function createAppointment(
       meetLink,
       notes: notes || null,
       telepsyConsent,
+      sessionPrice,
+      billAsSession,
+      paymentStatus: 'PENDING',
       updatedAt: new Date().toISOString(),
     })
 
     if (error) throw error
+
+    // REMOVIDO: Geração automática de fatura mensal
+    // Agora faturas são geradas manualmente pelo psicólogo
+    // const { ensureMonthlyInvoice } = await import('./monthly-invoice-helper')
+    // await ensureMonthlyInvoice(patientId, scheduledAt)
   } catch (error) {
     console.error('Erro ao criar agendamento:', error)
     return {
@@ -259,6 +273,7 @@ export async function createAppointment(
   }
 
   revalidatePath('/dashboard/agenda')
+  revalidatePath('/dashboard/financeiro')
   redirect('/dashboard/agenda')
 }
 
@@ -389,7 +404,7 @@ export async function updateAppointment(
 
   revalidatePath('/dashboard/agenda')
   revalidatePath(`/dashboard/agenda/${id}`)
-  redirect('/dashboard/agenda')
+  redirect(`/dashboard/agenda/${id}`)
 }
 
 // Delete appointment (soft delete)
@@ -406,11 +421,11 @@ export async function deleteAppointment(
   }
 
   try {
-    // For appointments, we'll just cancel them instead of soft delete
+    // Soft delete: set deletedAt timestamp
     const { error } = await supabase
       .from('Appointment')
       .update({
-        status: AppointmentStatus.CANCELLED,
+        deletedAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       })
       .eq('id', id)

@@ -16,6 +16,6 @@ ALTER TABLE "Appointment"
 ALTER TABLE "Appointment"
   ALTER COLUMN "updatedAt" TYPE TIMESTAMPTZ USING "updatedAt" AT TIME ZONE 'UTC';
 
--- Make deletedAt also use TIMESTAMPTZ if it gets set
+-- Also fix deletedAt for soft deletes
 ALTER TABLE "Appointment"
   ALTER COLUMN "deletedAt" TYPE TIMESTAMPTZ USING "deletedAt" AT TIME ZONE 'UTC';

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { logout } from '@/lib/actions/auth'
 import Link from 'next/link'
-import { Users, Calendar, FileText, Settings, LayoutDashboard } from 'lucide-react'
+import { Users, Calendar, FileText, Settings, LayoutDashboard, DollarSign } from 'lucide-react'
 
 export default async function DashboardLayout({
     children,
@@ -47,6 +47,13 @@ export default async function DashboardLayout({
                                 >
                                     <Calendar className="w-4 h-4" />
                                     Agenda
+                                </Link>
+                                <Link
+                                    href="/dashboard/financeiro"
+                                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 text-sm font-medium"
+                                >
+                                    <DollarSign className="w-4 h-4" />
+                                    Financeiro
                                 </Link>
                                 <Link
                                     href="/dashboard/prontuarios"

@@ -188,7 +188,7 @@ export async function updatePatient(
 
     revalidatePath('/dashboard/pacientes')
     revalidatePath(`/dashboard/pacientes/${id}`)
-    redirect('/dashboard/pacientes')
+    redirect(`/dashboard/pacientes/${id}`)
 }
 
 // Deletar paciente

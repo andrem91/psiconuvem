@@ -42,3 +42,15 @@ export function formatTime(dateStr: string): string {
 export function formatDateTime(dateStr: string): string {
   return `${formatDate(dateStr)} ${formatTime(dateStr)}`
 }
+
+/**
+ * Returns today's date in YYYY-MM-DD format (for input[type="date"])
+ */
+export function getTodayDateString(): string {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
