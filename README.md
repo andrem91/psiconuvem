@@ -31,30 +31,42 @@
   - Proteção de rotas (middleware)
 
 - [x] **Gestão de Pacientes**
-  - CRUD completo
-  - Soft delete (LGPD)
+  - CRUD completo com soft delete
   - Consentimento LGPD com registro de IP
-  - Validação de telefone brasileiro
+  - Página de detalhes com cards de resumo
+  - Histórico de consultas e pagamentos
+  - Configuração de modelo de cobrança
+
+- [x] **Agenda de Consultas**
+  - CRUD de agendamentos
+  - Detecção de conflitos de horário
+  - Página de detalhes com ações (editar, cancelar, concluir)
+  - Geração automática de link Google Meet
+  - Consentimento telepsicologia (CFP 09/2024)
+  - Status: Agendado → Concluído → Cancelado → Não compareceu
+
+- [x] **Controle Financeiro**
+  - Dashboard com resumo mensal
+  - Navegação por mês
+  - Modelos: Por Sessão e Plano Mensal
+  - Sessão avulsa para mensalistas
+  - CRUD de lançamentos (receitas/despesas)
+  - Lista de devedores
+  - Controle de pagamentos
 
 - [x] **Segurança Enterprise**
   - Row Level Security (RLS) em todas tabelas
   - Multi-tenancy (isolamento de dados)
   - Criptografia AES-256-GCM para dados sensíveis
-  - Admin Client para operações privilegiadas
-
-- [x] **Dashboard**
-  - Visão geral da clínica
-  - Contadores de pacientes/consultas
-  - Informações do plano (Trial 30 dias)
+  - Soft delete para auditoria
 
 ### Roadmap 🚀
 
-- [ ] **Agenda** - Agendamento de consultas
 - [ ] **Prontuário Eletrônico** - Notas clínicas criptografadas
-- [ ] **Integração Google Meet** - Telepsicologia
 - [ ] **Portal do Paciente** - Área restrita para pacientes
-- [ ] **Pagamentos** - Integração Asaas
+- [ ] **Pagamentos** - Integração Asaas (PIX, cartão)
 - [ ] **Site Público** - Página profissional do psicólogo
+- [ ] **Recibos PDF** - Geração automática
 
 ---
 
@@ -141,24 +153,40 @@ psiconuvem/
 │   │   ├── auth/callback/      # OAuth/Email callback
 │   │   ├── dashboard/          # Área autenticada
 │   │   │   ├── _components/    # Componentes do dashboard
-│   │   │   └── pacientes/      # CRUD de pacientes
+│   │   │   ├── pacientes/      # CRUD + detalhes de pacientes
+│   │   │   ├── agenda/         # CRUD + detalhes de agendamentos
+│   │   │   └── financeiro/     # Dashboard financeiro
 │   │   ├── login/              # Página de login
 │   │   └── registro/           # Página de cadastro
 │   │
+│   ├── components/             # Componentes reutilizáveis
+│   │   ├── PaymentBadge.tsx    # Badge de status de pagamento
+│   │   ├── FinancialTabs.tsx   # Abas do financeiro
+│   │   └── MonthSelector.tsx   # Navegação por mês
+│   │
 │   ├── lib/                    # Lógica de negócio
 │   │   ├── actions/            # Server Actions
+│   │   │   ├── patients.ts     # CRUD pacientes
+│   │   │   ├── appointments.ts # CRUD agendamentos
+│   │   │   ├── financial.ts    # Controle financeiro
+│   │   │   └── financial-records.ts # CRUD lançamentos
 │   │   ├── supabase/           # Clients Supabase
 │   │   ├── validations/        # Schemas Zod
+│   │   ├── utils/              # Utilidades (format, date, month)
 │   │   ├── encryption.ts       # Criptografia AES-256
-│   │   ├── tenant.ts           # Multi-tenancy helper
-│   │   └── ip.ts               # Captura IP (LGPD)
+│   │   └── tenant.ts           # Multi-tenancy helper
 │   │
 │   ├── types/                  # TypeScript types
 │   └── middleware.ts           # Proteção de rotas
 │
 ├── supabase/
-│   ├── migrations/             # SQL migrations
+│   ├── migrations/             # SQL migrations (8 arquivos)
 │   └── config.toml             # Configuração local
+│
+├── docs-referencia/            # Documentação do projeto
+│   ├── ROADMAP.md              # Cronograma MVP
+│   ├── FUNCIONALIDADES.md      # Especificações
+│   └── MELHORIAS-FUTURAS.md    # Backlog de ideias
 │
 └── tests/                      # Testes unitários
 ```

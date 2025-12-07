@@ -68,15 +68,29 @@
 
 ---
 
-### Em Progresso ⏳
+### Concluído ✅
 
-**Semana 3-4: Controle Financeiro + Prontuários** 🔄
+**Semana 3-4: Controle Financeiro** ✅
 - [x] Schema financeiro completo (4 tabelas)
 - [x] Server Actions financeiras (8 funções)
 - [x] Modelos de cobrança (por sessão + plano mensal)
 - [x] Geração automática de faturas
 - [x] Resumo financeiro e lista de devedores
-- [ ] **Dashboard Financeiro UI** (próximo)
+- [x] Dashboard Financeiro UI
+- [x] Navegação por mês
+- [x] CRUD de lançamentos (receitas/despesas)
+- [x] Sessão avulsa para mensalistas
+- [x] Controle manual de plano (planStartDate)
+
+**Semana 3-4: Melhorias UX** ✅
+- [x] Página de detalhes do paciente (cards, históricos, ações)
+- [x] Página de detalhes do agendamento (ações, edição)
+- [x] Badge de pagamento na agenda
+- [x] Configuração de modelo de cobrança no paciente
+
+### Em Progresso ⏳
+
+**Semana 5: Prontuários Clínicos** 🔄
 - [ ] Prontuários Clínicos
 - [ ] Criptografia AES-256-GCM obrigatória
 - [ ] Compliance CFP 001/2009 (5 anos de retenção)
@@ -85,36 +99,36 @@
 
 ## 📆 Cronograma Restante
 
-### Semana 3.5: Controle Financeiro Básico ✅ (Backend Completo)
+### Semana 3.5: Controle Financeiro ✅ (Completo!)
 
-**Dia 14-15: Backend** ✅
+**Backend** ✅
 - [x] Migration: Campos financeiros em Appointment
 - [x] Migration: Campos de cobrança em Patient (paymentModel, monthlyPlanPrice, etc)
 - [x] Migration: Tabela MonthlyInvoice
 - [x] Migration: Tabela FinancialSettings
-- [x] Migration: RLS policies completas
-- [x] Migration: 6 índices de performance
-- [x] Server Actions completas (8 funções)
-- [x] Type-check sem erros
+- [x] Migration: Tabela FinancialRecord (lançamentos manuais)
+- [x] Migration: billAsSession (sessão avulsa)
+- [x] Migration: planStartDate (controle de plano)
+- [x] Server Actions completas (8+ funções)
 
-**Dia 16-17: Frontend** ⏳
-- [ ] Página `/dashboard/financeiro`
-- [ ] Cards de resumo (sessões + mensalidades + total)
-- [ ] Abas: Sessões | Mensalidades
-- [ ] Lista de devedores
-- [ ] Filtro por mês
-- [ ] Modal "Marcar como Pago"
-- [ ] Botão "Gerar Faturas do Mês"
+**Frontend** ✅
+- [x] Página `/dashboard/financeiro`
+- [x] Cards de resumo (sessões + mensalidades + total)
+- [x] Abas: Sessões | Mensalidades | Extrato
+- [x] Lista de devedores
+- [x] Navegação por mês
+- [x] Modal "Marcar como Pago"
+- [x] CRUD de lançamentos (receitas/despesas)
 
-**Dia 17-18: Integrações**
-- [ ] Badge de status de pagamento na agenda
-- [ ] Aba Financeiro no perfil do paciente
-- [ ] Configuração de modelo de cobrança
+**Integrações** ✅
+- [x] Badge de status de pagamento na agenda
+- [x] Configuração de modelo de cobrança no paciente
+- [x] Botão gerar fatura no perfil do paciente
 
 **Entregas:**
 - ✅ Backend completo (DB + Server Actions)
-- ⏳ Dashboard financeiro funcional
-- ⏳ Controle de recebimentos por sessão/mensal
+- ✅ Dashboard financeiro funcional
+- ✅ Controle de recebimentos por sessão/mensal
 
 ---
 
