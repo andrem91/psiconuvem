@@ -11,8 +11,8 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 25 |
-| ✅ Passou | 24 (96%) |
+| Cenários Testados | 28 |
+| ✅ Passou | 27 (96%) |
 | ⚠️ A Verificar | 1 (4%) |
 | ❌ Falhou | 0 (0%) |
 
@@ -79,6 +79,13 @@
 | Marcar como pago | ✅ Funciona e atualiza UI |
 | Marcar como concluído | ⚠️ Funciona (DB) mas badge UI tem delay |
 
+### 2.8 Validações e Features Avançadas ✅
+| Cenário | Status |
+|---------|--------|
+| Conflito de horários | ✅ Erro exibido corretamente |
+| Sessão online (Google Meet) | ✅ Link gerado automaticamente |
+| Checkbox telepsicologia | ✅ Exibido ao selecionar online |
+
 ---
 
 ## 3. Bugs Encontrados
@@ -117,13 +124,13 @@
 - [ ] Filtro por status
 
 ### Agenda
-- [ ] Conflito de horários
+- [x] Conflito de horários
 - [ ] Reagendamento
-- [ ] Sessão online com Google Meet
-- [ ] Telepsicologia consent
+- [x] Sessão online com Google Meet
+- [x] Telepsicologia consent
 
 ### Financeiro
-- [ ] Marcar sessão como paga
+- [x] Marcar sessão como paga
 - [ ] Paciente mensalista
 - [ ] Sessão extra (billAsSession)
 - [ ] Filtro por período
