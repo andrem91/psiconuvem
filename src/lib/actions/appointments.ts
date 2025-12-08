@@ -340,7 +340,13 @@ export async function updateAppointment(
     }
   }
 
-  const validatedFields = createAppointmentSchema.safeParse({
+  // Schema simplificado para update (não altera preço)
+  const updateSchema = createAppointmentSchema.omit({ 
+    sessionPrice: true, 
+    billAsSession: true 
+  })
+
+  const validatedFields = updateSchema.safeParse({
     patientId: formData.get('patientId'),
     scheduledAt: formData.get('scheduledAt'),
     duration: Number(formData.get('duration')),
