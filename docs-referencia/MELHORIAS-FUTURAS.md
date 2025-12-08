@@ -64,9 +64,92 @@ Features adicionais para página de detalhes:
 
 ### 1. DayView Component (Google Calendar-like)
 
-**Prioridade**: 🔥 Alta | **Esforço**: 🏋️ Grande (2-3 dias)
+**Prioridade**: ✅ **IMPLEMENTADO** | **Esforço**: 🏋️ Grande (2-3 dias)
 
-Transformar a lista de agendamentos em visualização temporal com blocos visuais.
+> **Status**: Implementado na Fase 4 do Refactor (07/12/2024)
+> 
+> Arquivos criados:
+> - `src/lib/utils/time-grid.ts`
+> - `src/components/agenda/DayTimeline.tsx`
+> - `src/components/agenda/AppointmentBlock.tsx`
+> - `src/components/agenda/DateNavigator.tsx`
+
+---
+
+### 1.1 Link "Marketing" no Menu Lateral
+
+**Prioridade**: 🔥 Alta | **Esforço**: ⚡ Pequeno (30min)
+
+Adicionar link para `/dashboard/marketing/pagina` no menu lateral do dashboard para acessar o editor do site profissional.
+
+---
+
+### 1.2 Popular Campos de Cache (lastAppointmentAt / nextAppointmentAt)
+
+**Prioridade**: 🟡 Média | **Esforço**: ⚡ Pequeno (2h)
+
+Criar trigger SQL ou job periódico para popular automaticamente os campos de cache no Patient:
+- `lastAppointmentAt`: Última sessão realizada (status = COMPLETED)
+- `nextAppointmentAt`: Próxima sessão agendada (status = SCHEDULED, data futura)
+
+**Implementação sugerida:**
+```sql
+CREATE OR REPLACE FUNCTION update_patient_appointment_cache()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE "Patient" SET
+    "lastAppointmentAt" = (
+      SELECT MAX("scheduledAt") FROM "Appointment" 
+      WHERE "patientId" = NEW."patientId" AND "status" = 'COMPLETED'
+    ),
+    "nextAppointmentAt" = (
+      SELECT MIN("scheduledAt") FROM "Appointment" 
+      WHERE "patientId" = NEW."patientId" AND "status" = 'SCHEDULED' 
+      AND "scheduledAt" > NOW()
+    )
+  WHERE "id" = NEW."patientId";
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+---
+
+### 1.3 Templates de Prontuário (SOAP, Anamnese)
+
+**Prioridade**: 🟡 Média | **Esforço**: 🏋️ Médio (1 dia)
+
+Adicionar templates pré-definidos no editor de prontuário:
+- **SOAP** (Subjetivo, Objetivo, Avaliação, Plano)
+- **Anamnese** (primeira sessão)
+- **Devolutiva** (feedback para paciente)
+- **Alta** (encerramento de tratamento)
+
+**Implementação:**
+- Dropdown/botão "Usar Template" no NoteEditor
+- Templates salvos em JSON ou como registros no banco
+
+---
+
+### 1.4 Link Agenda → Prontuário
+
+**Prioridade**: 🔥 Alta | **Esforço**: ⚡ Pequeno (2h)
+
+Após finalizar uma sessão na Agenda (marcar como COMPLETED), exibir botão "Escrever Prontuário" que redireciona para `/dashboard/pacientes/[id]/prontuario/nova` com contexto pré-preenchido.
+
+---
+
+### 1.5 CRM de Leads (Site Público)
+
+**Prioridade**: 🟡 Média | **Esforço**: 🏋️ Médio (1 dia)
+
+Criar tabela `Lead` para capturar visitantes do site público que clicaram no WhatsApp:
+- Origem (slug do psicólogo)
+- Data/hora do clique
+- Status (Novo, Contatado, Convertido, Perdido)
+- Integração com dashboard para follow-up
+
+---
 
 #### Benefícios
 - ✅ Visualização clara de horários livres/ocupados

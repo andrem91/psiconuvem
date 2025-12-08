@@ -4,7 +4,7 @@ import { ArrowLeft, Pencil, Calendar, Clock, User, Video, MapPin, Copy, Check, X
 import { notFound } from 'next/navigation'
 import { formatCurrency } from '@/lib/utils/format'
 import { formatDate } from '@/lib/utils/date'
-import { PaymentBadge, PaymentStatus } from '@/components/PaymentBadge'
+import { PaymentBadge, PaymentStatus } from '@/components/financeiro/PaymentBadge'
 import { AppointmentStatusActions } from './_components/AppointmentStatusActions'
 import { CopyMeetLinkButton } from './_components/CopyMeetLinkButton'
 

@@ -1,6 +1,6 @@
-# 🧠 PsicoNuvem
+# 🧠 PsicoNuvem OS
 
-> SaaS de gestão clínica para psicólogos brasileiros
+> SaaS de gestão clínica integrada para psicólogos brasileiros
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database%20%2B%20Auth-3ECF8E?logo=supabase)](https://supabase.com/)
@@ -11,62 +11,60 @@
 
 ## 📋 Sobre o Projeto
 
-**PsicoNuvem** é uma plataforma completa para psicólogos gerenciarem suas clínicas de forma segura e eficiente. O sistema foi desenvolvido com foco em:
+**PsicoNuvem OS** é uma plataforma integrada para psicólogos gerenciarem suas clínicas de forma segura e eficiente. O sistema foi desenvolvido com foco em:
 
-- 🔒 **Segurança** - Criptografia, RLS (Row Level Security), LGPD compliance
+- 🔒 **Segurança** - Criptografia AES-256-GCM, RLS, LGPD compliance
 - 🏢 **Multi-tenancy** - Isolamento total de dados entre profissionais
-- 🇧🇷 **Brasil** - Integração com Asaas, validação de CRP, normas CFP
-- ⚡ **Performance** - Next.js 16, React Server Components, Edge Runtime
+- 🇧🇷 **Brasil** - Validação de CRP, normas CFP
+- ⚡ **Performance** - Next.js 16, React Server Components
+- 🔄 **Integração** - Fluxo contínuo: Agenda → Prontuário → Financeiro
 
 ---
 
 ## ✨ Features
 
-### Implementadas ✅
+### Dashboard Unificado (Cockpit) ✅
+- Home com estatísticas em tempo real
+- Action Center (alertas de pendências)
+- Timeline do dia (agenda visual)
 
-- [x] **Autenticação Completa**
-  - Registro com validação de CRP
-  - Login com email/senha
-  - Confirmação de email
-  - Proteção de rotas (middleware)
+### Gestão de Pacientes ✅
+- CRUD completo com soft delete
+- Consentimento LGPD com registro de IP
+- Status: Ativo/Inativo/Arquivado
+- Histórico de consultas e pagamentos
 
-- [x] **Gestão de Pacientes**
-  - CRUD completo com soft delete
-  - Consentimento LGPD com registro de IP
-  - Página de detalhes com cards de resumo
-  - Histórico de consultas e pagamentos
-  - Configuração de modelo de cobrança
+### Agenda (Day View) ✅
+- Timeline visual (07:00 - 22:00)
+- Navegação dia-a-dia com "Hoje"
+- Blocos coloridos por status
+- Linha do "agora" em tempo real
+- Geração automática de link Google Meet
 
-- [x] **Agenda de Consultas**
-  - CRUD de agendamentos
-  - Detecção de conflitos de horário
-  - Página de detalhes com ações (editar, cancelar, concluir)
-  - Geração automática de link Google Meet
-  - Consentimento telepsicologia (CFP 09/2024)
-  - Status: Agendado → Concluído → Cancelado → Não compareceu
+### Controle Financeiro (Patient-Centric) ✅
+- Health Cards (Recebido, Pendente, Em Atraso)
+- Lista inteligente de devedores
+- Botão "WhatsApp de Cobrança" integrado
+- Modelos: Por Sessão e Plano Mensal
 
-- [x] **Controle Financeiro**
-  - Dashboard com resumo mensal
-  - Navegação por mês
-  - Modelos: Por Sessão e Plano Mensal
-  - Sessão avulsa para mensalistas
-  - CRUD de lançamentos (receitas/despesas)
-  - Lista de devedores
-  - Controle de pagamentos
+### Prontuário Eletrônico Seguro ✅
+- Criptografia AES-256-GCM ponta-a-ponta
+- Auto-save com debounce (2s)
+- Badge visual "🔒 Criptografia Ativa"
+- Histórico de sessões na sidebar
 
-- [x] **Segurança Enterprise**
-  - Row Level Security (RLS) em todas tabelas
-  - Multi-tenancy (isolamento de dados)
-  - Criptografia AES-256-GCM para dados sensíveis
-  - Soft delete para auditoria
+### Site Profissional ✅
+- Landing page pública `/p/[slug]`
+- 5 temas de cores
+- WhatsApp CTA otimizado
+- SEO automático
+- Editor no dashboard
 
-### Roadmap 🚀
-
-- [ ] **Prontuário Eletrônico** - Notas clínicas criptografadas
-- [ ] **Portal do Paciente** - Área restrita para pacientes
-- [ ] **Pagamentos** - Integração Asaas (PIX, cartão)
-- [ ] **Site Público** - Página profissional do psicólogo
-- [ ] **Recibos PDF** - Geração automática
+### Segurança Enterprise ✅
+- Row Level Security (RLS) em todas tabelas
+- Multi-tenancy (isolamento de dados)
+- Criptografia AES-256-GCM para prontuários
+- Soft delete para auditoria
 
 ---
 
@@ -78,12 +76,10 @@
 | **Linguagem** | TypeScript 5.x |
 | **Database** | PostgreSQL (Supabase) |
 | **Auth** | Supabase Auth |
-| **ORM** | Supabase Client |
 | **Styling** | Tailwind CSS 4 |
 | **Validação** | Zod |
 | **Ícones** | Lucide React |
 | **Testes** | Vitest + Testing Library |
-| **Qualidade** | ESLint, Prettier, Husky |
 
 ---
 
@@ -149,87 +145,70 @@ Acesse [http://localhost:3000](http://localhost:3000)
 ```
 psiconuvem/
 ├── src/
-│   ├── app/                    # App Router (páginas)
-│   │   ├── auth/callback/      # OAuth/Email callback
-│   │   ├── dashboard/          # Área autenticada
-│   │   │   ├── _components/    # Componentes do dashboard
-│   │   │   ├── pacientes/      # CRUD + detalhes de pacientes
-│   │   │   ├── agenda/         # CRUD + detalhes de agendamentos
-│   │   │   └── financeiro/     # Dashboard financeiro
-│   │   ├── login/              # Página de login
-│   │   └── registro/           # Página de cadastro
+│   ├── app/                     # App Router (páginas)
+│   │   ├── dashboard/           # Área autenticada
+│   │   │   ├── page.tsx         # Dashboard Cockpit
+│   │   │   ├── pacientes/       # Pacientes + Prontuário
+│   │   │   ├── agenda/          # Day View Timeline
+│   │   │   ├── financeiro/      # Devedores + Cobrança
+│   │   │   └── marketing/       # Editor do Site
+│   │   ├── p/[slug]/            # Site público do psicólogo
+│   │   ├── login/               # Login
+│   │   └── registro/            # Cadastro
 │   │
-│   ├── components/             # Componentes reutilizáveis
-│   │   ├── PaymentBadge.tsx    # Badge de status de pagamento
-│   │   ├── FinancialTabs.tsx   # Abas do financeiro
-│   │   └── MonthSelector.tsx   # Navegação por mês
+│   ├── components/              # Componentes reutilizáveis
+│   │   ├── agenda/              # DayTimeline, AppointmentBlock
+│   │   ├── clinical/            # NoteEditor, HistorySidebar
+│   │   ├── financeiro/          # PaymentBadge, FinancialTabs
+│   │   └── marketing/           # ProfileEditor
 │   │
-│   ├── lib/                    # Lógica de negócio
-│   │   ├── actions/            # Server Actions
-│   │   │   ├── patients.ts     # CRUD pacientes
-│   │   │   ├── appointments.ts # CRUD agendamentos
-│   │   │   ├── financial.ts    # Controle financeiro
-│   │   │   └── financial-records.ts # CRUD lançamentos
-│   │   ├── supabase/           # Clients Supabase
-│   │   ├── validations/        # Schemas Zod
-│   │   ├── utils/              # Utilidades (format, date, month)
-│   │   ├── encryption.ts       # Criptografia AES-256
-│   │   └── tenant.ts           # Multi-tenancy helper
+│   ├── lib/                     # Lógica de negócio
+│   │   ├── actions/             # Server Actions
+│   │   │   ├── dashboard-context.ts  # getDashboardOverview
+│   │   │   ├── financial-context.ts  # getDebtorsList
+│   │   │   ├── clinical-notes.ts     # Prontuário (encrypted)
+│   │   │   └── professional-profile.ts
+│   │   ├── utils/               # Utilidades
+│   │   │   ├── time-grid.ts     # Cálculos da timeline
+│   │   │   └── whatsapp.ts      # Mensagens de cobrança
+│   │   └── encryption.ts        # AES-256-GCM
 │   │
-│   ├── types/                  # TypeScript types
-│   └── middleware.ts           # Proteção de rotas
+│   └── middleware.ts            # Proteção de rotas
 │
 ├── supabase/
-│   ├── migrations/             # SQL migrations (8 arquivos)
-│   └── config.toml             # Configuração local
+│   └── migrations/              # SQL migrations
 │
-├── docs-referencia/            # Documentação do projeto
-│   ├── ROADMAP.md              # Cronograma MVP
-│   ├── FUNCIONALIDADES.md      # Especificações
-│   └── MELHORIAS-FUTURAS.md    # Backlog de ideias
-│
-└── tests/                      # Testes unitários
+└── docs-referencia/             # Documentação
+    ├── ROADMAP.md               # Status do projeto
+    └── MELHORIAS-FUTURAS.md     # Backlog
 ```
 
 ---
 
 ## 🔒 Segurança
 
+### Criptografia de Prontuários
+
+Os prontuários clínicos são criptografados com **AES-256-GCM** antes de serem salvos no banco de dados. A chave de criptografia é armazenada apenas no servidor via `ENCRYPTION_KEY`.
+
+```typescript
+// Formato: iv:authTag:ciphertext (hex)
+const encrypted = encrypt(prontuarioContent)
+const decrypted = decrypt(encrypted)
+```
+
 ### Row Level Security (RLS)
 
 Todas as tabelas possuem políticas RLS que garantem:
-
 - Psicólogo só acessa **seus próprios dados**
 - Isolamento completo entre tenants
-- Proteção mesmo se houver bug no código
 
-### LGPD Compliance
+### LGPD & CFP Compliance
 
 - ✅ Consentimento explícito com registro de data/IP
 - ✅ Soft delete (dados mantidos por 5 anos - CFP)
 - ✅ Criptografia de dados sensíveis
-- ✅ Direito de acesso e portabilidade
-
-### CFP (Conselho Federal de Psicologia)
-
 - ✅ Validação de CRP no cadastro
-- ✅ Campos obrigatórios de prontuário
-- ✅ Retenção de 5 anos (Resolução 001/2009)
-
----
-
-## 🧪 Testes
-
-```bash
-# Rodar testes
-npm test
-
-# Testes com UI
-npm run test:ui
-
-# Coverage
-npm run test:coverage
-```
 
 ---
 
@@ -239,11 +218,9 @@ npm run test:coverage
 |--------|-----------|
 | `npm run dev` | Servidor de desenvolvimento |
 | `npm run build` | Build de produção |
-| `npm run start` | Iniciar build de produção |
+| `npm run type-check` | Verificar tipos TypeScript |
 | `npm run lint` | Verificar linting |
-| `npm run format` | Formatar código |
 | `npm test` | Rodar testes |
-| `npm run test:coverage` | Testes com coverage |
 
 ---
 
@@ -254,17 +231,6 @@ npm run test:coverage
 3. Commit suas mudanças (`git commit -m 'feat: adiciona nova feature'`)
 4. Push para a branch (`git push origin feature/nova-feature`)
 5. Abra um Pull Request
-
-### Conventional Commits
-
-Este projeto usa [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `feat:` Nova feature
-- `fix:` Correção de bug
-- `docs:` Documentação
-- `refactor:` Refatoração
-- `test:` Testes
-- `chore:` Tarefas gerais
 
 ---
 
@@ -277,7 +243,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ## 👨‍💻 Autor
 
 **André Marques**
-
 - GitHub: [@andrem91](https://github.com/andrem91)
 
 ---

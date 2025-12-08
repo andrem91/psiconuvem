@@ -1,7 +1,7 @@
 import { getPatients } from '@/lib/actions/patients'
 import Link from 'next/link'
 import { Plus, Phone, Mail } from 'lucide-react'
-import { PaymentModelBadge } from '@/components/PaymentModelBadge'
+import { PaymentModelBadge } from '@/components/financeiro/PaymentModelBadge'
 
 export default async function PacientesPage() {
     const patients = await getPatients()

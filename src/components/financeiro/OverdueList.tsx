@@ -1,5 +1,5 @@
 import { getOverduePayments } from '@/lib/actions/financial'
-import { PaymentBadge } from '@/components/PaymentBadge'
+import { PaymentBadge } from '@/components/financeiro/PaymentBadge'
 import { formatCurrency } from '@/lib/utils/format'
 import { formatDate } from '@/lib/utils/date'
 

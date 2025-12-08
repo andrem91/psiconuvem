@@ -1,6 +1,6 @@
-import { PaymentBadge } from '@/components/PaymentBadge'
-import { PaymentModelBadge } from '@/components/PaymentModelBadge'
-import { FinancialSummaryCard } from '@/components/FinancialSummaryCard'
+import { PaymentBadge } from '@/components/financeiro/PaymentBadge'
+import { PaymentModelBadge } from '@/components/financeiro/PaymentModelBadge'
+import { FinancialSummaryCard } from '@/components/financeiro/FinancialSummaryCard'
 
 export default function TestBadgesPage() {
     return (

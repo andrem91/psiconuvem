@@ -36,6 +36,7 @@ export type Database = {
     Tables: {
       Appointment: {
         Row: {
+          billAsSession: boolean | null
           createdAt: string
           deletedAt: string | null
           duration: number
@@ -54,9 +55,9 @@ export type Database = {
           telepsyConsent: boolean
           type: string
           updatedAt: string
-          billAsSession: boolean
         }
         Insert: {
+          billAsSession?: boolean | null
           createdAt?: string
           deletedAt?: string | null
           duration?: number
@@ -75,9 +76,9 @@ export type Database = {
           telepsyConsent?: boolean
           type?: string
           updatedAt: string
-          billAsSession?: boolean
         }
         Update: {
+          billAsSession?: boolean | null
           createdAt?: string
           deletedAt?: string | null
           duration?: number
@@ -96,7 +97,6 @@ export type Database = {
           telepsyConsent?: boolean
           type?: string
           updatedAt?: string
-          billAsSession?: boolean
         }
         Relationships: [
           {
@@ -165,6 +165,76 @@ export type Database = {
           },
           {
             foreignKeyName: "ClinicalNote_psychologistId_fkey"
+            columns: ["psychologistId"]
+            isOneToOne: false
+            referencedRelation: "Psychologist"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      FinancialRecord: {
+        Row: {
+          amount: number
+          appointmentId: string | null
+          category: string
+          createdAt: string | null
+          date: string
+          deletedAt: string | null
+          description: string
+          id: string
+          patientId: string | null
+          psychologistId: string
+          status: string
+          type: string
+          updatedAt: string | null
+        }
+        Insert: {
+          amount: number
+          appointmentId?: string | null
+          category: string
+          createdAt?: string | null
+          date: string
+          deletedAt?: string | null
+          description: string
+          id?: string
+          patientId?: string | null
+          psychologistId: string
+          status?: string
+          type: string
+          updatedAt?: string | null
+        }
+        Update: {
+          amount?: number
+          appointmentId?: string | null
+          category?: string
+          createdAt?: string | null
+          date?: string
+          deletedAt?: string | null
+          description?: string
+          id?: string
+          patientId?: string | null
+          psychologistId?: string
+          status?: string
+          type?: string
+          updatedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "FinancialRecord_appointmentId_fkey"
+            columns: ["appointmentId"]
+            isOneToOne: false
+            referencedRelation: "Appointment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "FinancialRecord_patientId_fkey"
+            columns: ["patientId"]
+            isOneToOne: false
+            referencedRelation: "Patient"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "FinancialRecord_psychologistId_fkey"
             columns: ["psychologistId"]
             isOneToOne: false
             referencedRelation: "Psychologist"
@@ -279,59 +349,6 @@ export type Database = {
           },
         ]
       }
-      FinancialRecord: {
-        Row: {
-          amount: number
-          category: "SESSION" | "MONTHLY" | "OTHER"
-          createdAt: string
-          date: string
-          deletedAt: string | null
-          description: string
-          id: string
-          patientId: string | null
-          psychologistId: string
-          status: "PENDING" | "PAID" | "OVERDUE"
-          type: "INCOME" | "EXPENSE"
-          updatedAt: string
-        }
-        Insert: {
-          amount: number
-          category: "SESSION" | "MONTHLY" | "OTHER"
-          createdAt?: string
-          date: string
-          deletedAt?: string | null
-          description: string
-          id?: string
-          patientId?: string | null
-          psychologistId: string
-          status?: "PENDING" | "PAID" | "OVERDUE"
-          type: "INCOME" | "EXPENSE"
-          updatedAt?: string
-        }
-        Update: {
-          amount?: number
-          category?: "SESSION" | "MONTHLY" | "OTHER"
-          createdAt?: string
-          date?: string
-          deletedAt?: string | null
-          description?: string
-          id?: string
-          patientId?: string | null
-          psychologistId?: string
-          status?: "PENDING" | "PAID" | "OVERDUE"
-          type?: "INCOME" | "EXPENSE"
-          updatedAt?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "FinancialRecord_patientId_fkey"
-            columns: ["patientId"]
-            isOneToOne: false
-            referencedRelation: "Patient"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       Patient: {
         Row: {
           birthdate: string | null
@@ -340,18 +357,21 @@ export type Database = {
           email: string | null
           financialNotes: string | null
           id: string
+          lastAppointmentAt: string | null
           lgpdConsent: boolean
           lgpdConsentDate: string | null
           lgpdConsentIp: string | null
           monthlyPlanPrice: number | null
           name: string
+          nextAppointmentAt: string | null
           paymentDueDay: number | null
           paymentModel: string | null
           phone: string
+          planStartDate: string | null
           psychologistId: string
           sessionsPerMonth: number | null
+          status: Database["public"]["Enums"]["PatientStatus"] | null
           updatedAt: string
-          planStartDate: string | null
         }
         Insert: {
           birthdate?: string | null
@@ -360,18 +380,21 @@ export type Database = {
           email?: string | null
           financialNotes?: string | null
           id: string
+          lastAppointmentAt?: string | null
           lgpdConsent?: boolean
           lgpdConsentDate?: string | null
           lgpdConsentIp?: string | null
           monthlyPlanPrice?: number | null
           name: string
+          nextAppointmentAt?: string | null
           paymentDueDay?: number | null
           paymentModel?: string | null
           phone: string
+          planStartDate?: string | null
           psychologistId: string
           sessionsPerMonth?: number | null
+          status?: Database["public"]["Enums"]["PatientStatus"] | null
           updatedAt: string
-          planStartDate?: string | null
         }
         Update: {
           birthdate?: string | null
@@ -380,24 +403,83 @@ export type Database = {
           email?: string | null
           financialNotes?: string | null
           id?: string
+          lastAppointmentAt?: string | null
           lgpdConsent?: boolean
           lgpdConsentDate?: string | null
           lgpdConsentIp?: string | null
           monthlyPlanPrice?: number | null
           name?: string
+          nextAppointmentAt?: string | null
           paymentDueDay?: number | null
           paymentModel?: string | null
           phone?: string
+          planStartDate?: string | null
           psychologistId?: string
           sessionsPerMonth?: number | null
+          status?: Database["public"]["Enums"]["PatientStatus"] | null
           updatedAt?: string
-          planStartDate?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "Patient_psychologistId_fkey"
             columns: ["psychologistId"]
             isOneToOne: false
+            referencedRelation: "Psychologist"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ProfessionalProfile: {
+        Row: {
+          address: string | null
+          bio: string | null
+          createdAt: string | null
+          heroTitle: string | null
+          id: string
+          instagram: string | null
+          linkedin: string | null
+          mapUrl: string | null
+          psychologistId: string
+          slug: string
+          themeColor: string | null
+          updatedAt: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          address?: string | null
+          bio?: string | null
+          createdAt?: string | null
+          heroTitle?: string | null
+          id?: string
+          instagram?: string | null
+          linkedin?: string | null
+          mapUrl?: string | null
+          psychologistId: string
+          slug: string
+          themeColor?: string | null
+          updatedAt?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          address?: string | null
+          bio?: string | null
+          createdAt?: string | null
+          heroTitle?: string | null
+          id?: string
+          instagram?: string | null
+          linkedin?: string | null
+          mapUrl?: string | null
+          psychologistId?: string
+          slug?: string
+          themeColor?: string | null
+          updatedAt?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ProfessionalProfile_psychologistId_fkey"
+            columns: ["psychologistId"]
+            isOneToOne: true
             referencedRelation: "Psychologist"
             referencedColumns: ["id"]
           },
@@ -468,7 +550,7 @@ export type Database = {
       get_current_psychologist_id: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      PatientStatus: "ACTIVE" | "INACTIVE" | "ARCHIVED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -598,7 +680,9 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      PatientStatus: ["ACTIVE", "INACTIVE", "ARCHIVED"],
+    },
   },
 } as const
 
