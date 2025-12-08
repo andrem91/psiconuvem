@@ -429,6 +429,28 @@ Configurar rotina de backup do Supabase:
 
 ## 💳 Financeiro
 
+### 14.5 Paciente Mensalista
+
+**Prioridade**: 🔥 Alta | **Esforço**: 🏋️ Médio (1 dia)
+
+**Dor Resolvida**: Psicólogos que trabalham com planos mensais precisam cobrar valor fixo independente do número de sessões.
+
+**Implementação:**
+- Dropdown "Modelo de Cobrança" na edição de paciente com opções:
+  - Por Sessão (atual)
+  - Plano Mensal (novo)
+- Campo "Valor do Plano Mensal" quando selecionado Mensalista
+- Geração automática de fatura mensal (MonthlyInvoice)
+- Badge "Mensalista" na lista de pacientes
+
+**Campos no Patient:**
+```sql
+paymentModel: 'PER_SESSION' | 'MONTHLY_PLAN'
+monthlyPlanValue: Decimal?
+```
+
+---
+
 ### 15. Gestão de Pagamentos
 
 **Prioridade**: 🔥 Alta | **Esforço**: 🏋️ Grande (4-5 dias)

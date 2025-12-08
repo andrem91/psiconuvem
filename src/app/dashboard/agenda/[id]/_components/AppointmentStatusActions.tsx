@@ -10,22 +10,44 @@ interface AppointmentStatusActionsProps {
     currentStatus: string
     paymentStatus: string
     sessionPrice: number | null
+    onStatusChange?: (newStatus: string) => void
+}
+
+// Status badges with colors
+function StatusBadge({ status }: { status: string }) {
+    const statusConfig: Record<string, { label: string; className: string }> = {
+        'SCHEDULED': { label: '📅 Agendado', className: 'bg-blue-100 text-blue-800' },
+        'COMPLETED': { label: '✅ Concluído', className: 'bg-green-100 text-green-800' },
+        'CANCELLED': { label: '❌ Cancelado', className: 'bg-gray-100 text-gray-600' },
+        'NO_SHOW': { label: '⚠️ Não compareceu', className: 'bg-yellow-100 text-yellow-800' },
+    }
+
+    const config = statusConfig[status] || { label: status, className: 'bg-gray-100 text-gray-800' }
+
+    return (
+        <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${config.className}`}>
+            {config.label}
+        </span>
+    )
 }
 
 export function AppointmentStatusActions({
     appointmentId,
     currentStatus,
     paymentStatus,
-    sessionPrice
+    sessionPrice,
+    onStatusChange
 }: AppointmentStatusActionsProps) {
     const [isPending, startTransition] = useTransition()
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+    const [localStatus, setLocalStatus] = useState(currentStatus)
+    const [localPaymentStatus, setLocalPaymentStatus] = useState(paymentStatus)
     const router = useRouter()
 
-    const canComplete = currentStatus === 'SCHEDULED'
-    const canCancel = currentStatus === 'SCHEDULED'
-    const canMarkNoShow = currentStatus === 'SCHEDULED'
-    const canMarkPaid = (paymentStatus === 'PENDING' || paymentStatus === 'OVERDUE') &&
+    const canComplete = localStatus === 'SCHEDULED'
+    const canCancel = localStatus === 'SCHEDULED'
+    const canMarkNoShow = localStatus === 'SCHEDULED'
+    const canMarkPaid = (localPaymentStatus === 'PENDING' || localPaymentStatus === 'OVERDUE') &&
         sessionPrice != null && sessionPrice > 0
 
     const handleStatusChange = (newStatus: 'COMPLETED' | 'CANCELLED' | 'NO_SHOW') => {
@@ -42,6 +64,8 @@ export function AppointmentStatusActions({
             const result = await updateAppointmentStatus(appointmentId, newStatus)
             if (result.success) {
                 setMessage({ type: 'success', text: `✅ Status atualizado para ${statusLabels[newStatus]}` })
+                setLocalStatus(newStatus) // Optimistic UI update
+                onStatusChange?.(newStatus)
                 router.refresh()
             } else {
                 setMessage({ type: 'error', text: `❌ ${result.error}` })
@@ -55,6 +79,7 @@ export function AppointmentStatusActions({
             const result = await markSessionAsPaid(appointmentId, { paymentMethod: 'PIX' })
             if (result.success) {
                 setMessage({ type: 'success', text: '✅ Pagamento registrado!' })
+                setLocalPaymentStatus('PAID') // Optimistic UI update
                 router.refresh()
             } else {
                 setMessage({ type: 'error', text: `❌ ${result.error}` })
@@ -78,6 +103,12 @@ export function AppointmentStatusActions({
 
     return (
         <div className="space-y-3">
+            {/* Status Badge - Optimistically updated */}
+            <div className="mb-4">
+                <p className="text-sm text-gray-500 mb-1">Status atual:</p>
+                <StatusBadge status={localStatus} />
+            </div>
+
             {canComplete && (
                 <button
                     onClick={() => handleStatusChange('COMPLETED')}
