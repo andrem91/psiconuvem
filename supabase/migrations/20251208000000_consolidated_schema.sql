@@ -411,19 +411,28 @@ CREATE POLICY "financialrecord_delete_own" ON "FinancialRecord" FOR DELETE
 USING ("psychologistId" = get_current_psychologist_id());
 
 -- ============================================
--- 19. POLICIES: ProfessionalProfile (FIX: Consolidado)
+-- 19. POLICIES: ProfessionalProfile (FIX: Única policy SELECT com OR)
 -- ============================================
 
--- Acesso do proprietário (autenticado)
-CREATE POLICY "professionalprofile_owner_all" ON "ProfessionalProfile"
-FOR ALL
+-- SELECT: Público OU proprietário (única policy para evitar warning)
+CREATE POLICY "professionalprofile_select" ON "ProfessionalProfile"
+FOR SELECT
+USING (true); -- Perfis são públicos para landing pages
+
+-- INSERT: Apenas proprietário
+CREATE POLICY "professionalprofile_insert_own" ON "ProfessionalProfile"
+FOR INSERT
+WITH CHECK ("psychologistId" = get_current_psychologist_id());
+
+-- UPDATE: Apenas proprietário
+CREATE POLICY "professionalprofile_update_own" ON "ProfessionalProfile"
+FOR UPDATE
 USING ("psychologistId" = get_current_psychologist_id());
 
--- Acesso público para leitura (landing pages)
-CREATE POLICY "professionalprofile_public_read" ON "ProfessionalProfile"
-FOR SELECT
-TO anon
-USING (true);
+-- DELETE: Apenas proprietário (se necessário)
+CREATE POLICY "professionalprofile_delete_own" ON "ProfessionalProfile"
+FOR DELETE
+USING ("psychologistId" = get_current_psychologist_id());
 
 -- ============================================
 -- 20. COMENTÁRIOS (Documentação)
