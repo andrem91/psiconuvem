@@ -11,9 +11,9 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 28 |
-| ✅ Passou | 27 (96%) |
-| ⚠️ A Verificar | 1 (4%) |
+| Cenários Testados | 29 |
+| ✅ Passou | 29 (100%) |
+| ⚠️ A Verificar | 0 (0%) |
 | ❌ Falhou | 0 (0%) |
 
 ---
@@ -118,8 +118,8 @@
 ## 5. Cenários Ainda Não Testados
 
 ### Pacientes
-- [ ] Editar paciente existente
-- [ ] Excluir paciente (soft delete)
+- [x] Editar paciente existente
+- [x] Excluir paciente (cascade delete)
 - [ ] Busca por nome
 - [ ] Filtro por status
 
