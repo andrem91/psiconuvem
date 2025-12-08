@@ -31,16 +31,22 @@ export type PatientState = {
 // --- QUERIES DE LEITURA (GET) ---
 
 // Listar pacientes do psicólogo logado
-export async function getPatients() {
+export async function getPatients(search?: string) {
     const psychologistId = await getCurrentPsychologistId()
     const supabase = await createClient()
 
-    const { data, error } = await supabase
+    let query = supabase
         .from('Patient')
         .select('*')
         .eq('psychologistId', psychologistId)
         .is('deletedAt', null)
-        .order('name', { ascending: true })
+    
+    // Filtrar por nome se tiver busca
+    if (search && search.trim()) {
+        query = query.ilike('name', `%${search.trim()}%`)
+    }
+    
+    const { data, error } = await query.order('name', { ascending: true })
     
     if (error) {
         console.error('Erro ao listar pacientes:', error.message)

@@ -2,9 +2,16 @@ import { getPatients } from '@/lib/actions/patients'
 import Link from 'next/link'
 import { Plus, Phone, Mail } from 'lucide-react'
 import { PaymentModelBadge } from '@/components/financeiro/PaymentModelBadge'
+import { PatientSearch } from './_components/PatientSearch'
+import { Suspense } from 'react'
 
-export default async function PacientesPage() {
-    const patients = await getPatients()
+type PacientesPageProps = {
+    searchParams: Promise<{ search?: string }>
+}
+
+export default async function PacientesPage({ searchParams }: PacientesPageProps) {
+    const { search } = await searchParams
+    const patients = await getPatients(search)
 
     return (
         <div>
@@ -25,6 +32,21 @@ export default async function PacientesPage() {
                         Novo Paciente
                     </Link>
                 </div>
+            </div>
+
+            {/* Busca */}
+            <div className="mb-6">
+                <Suspense fallback={<div className="h-10 bg-gray-100 rounded-lg animate-pulse" />}>
+                    <PatientSearch />
+                </Suspense>
+                {search && (
+                    <p className="mt-2 text-sm text-gray-500">
+                        {patients.length === 0
+                            ? `Nenhum resultado para "${search}"`
+                            : `${patients.length} paciente(s) encontrado(s) para "${search}"`
+                        }
+                    </p>
+                )}
             </div>
 
             {/* Tabela */}
