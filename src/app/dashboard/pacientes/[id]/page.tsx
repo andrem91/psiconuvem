@@ -3,7 +3,7 @@ import { getAppointments } from '@/lib/actions/appointments'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentPsychologistId } from '@/lib/tenant'
 import Link from 'next/link'
-import { ArrowLeft, Pencil, Trash2, CalendarPlus, Phone, Mail, Calendar, CreditCard } from 'lucide-react'
+import { ArrowLeft, Pencil, Trash2, CalendarPlus, Phone, Mail, Calendar, CreditCard, FileText } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { PaymentModelBadge } from '@/components/financeiro/PaymentModelBadge'
 import { PaymentBadge, PaymentStatus } from '@/components/financeiro/PaymentBadge'
@@ -107,6 +107,13 @@ export default async function PatientDetailsPage({ params }: PatientDetailsPageP
                         >
                             <CalendarPlus className="w-4 h-4 mr-1" />
                             Agendar
+                        </Link>
+                        <Link
+                            href={`/dashboard/pacientes/${id}/prontuario`}
+                            className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        >
+                            <FileText className="w-4 h-4 mr-1" />
+                            Prontuário
                         </Link>
                         <Link
                             href={`/dashboard/pacientes/${id}/editar`}
