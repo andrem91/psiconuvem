@@ -12,8 +12,8 @@
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
 | Cenários Testados | 48 |
-| ✅ Passou | 47 (98%) |
-| ⚠️ A Verificar | 1 (2%) |
+| ✅ Passou | 48 (100%) |
+| ⚠️ A Verificar | 0 (0%) |
 | ❌ Falhou | 0 (0%) |
 
 ---
