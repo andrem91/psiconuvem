@@ -11,9 +11,9 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 32 |
-| ✅ Passou | 31 (97%) |
-| ⚠️ A Verificar | 1 (3%) |
+| Cenários Testados | 33 |
+| ✅ Passou | 33 (100%) |
+| ⚠️ A Verificar | 0 (0%) |
 | ❌ Falhou | 0 (0%) |
 
 ---
@@ -99,10 +99,8 @@
 - **Solução:** Redirect adicionado em `app/page.tsx`.
 
 ### BUG-003: UI Badge Agendamento
-- **Severidade:** 🟢 Baixa
-- **Módulo:** Agenda
-- **Descrição:** Ao mudar status para "Concluído", botão de ação some (correto) mas badge no header permanece "Agendado" até reload forçado.
-- **Status:** ⚠️ A investigar (Possível cache de componente server-side)
+- **Status:** ✅ **CORRIGIDO**
+- **Solução:** Implementado Optimistic UI Update com estado local no componente.
 
 ---
 
