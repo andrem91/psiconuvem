@@ -72,7 +72,7 @@ export async function setPatientPaymentModel(
     }
 
     updateData.monthlyPlanPrice = config.monthlyPlanPrice
-    updateData.paymentDueDay = config.paymentDueDay || 5
+    updateData.paymentDueDay = config.paymentDueDay
     updateData.sessionsPerMonth = config.sessionsPerMonth || 4
     updateData.planStartDate = config.planStartDate || null
   } else {

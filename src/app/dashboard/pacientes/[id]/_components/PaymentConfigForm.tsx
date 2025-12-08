@@ -19,8 +19,8 @@ export function PaymentConfigForm({
     initialPlanStartDate,
 }: PaymentConfigFormProps) {
     const [paymentModel, setPaymentModel] = useState(initialModel)
-    const [monthlyPrice, setMonthlyPrice] = useState(initialMonthlyPrice || 600)
-    const [dueDay, setDueDay] = useState(initialPaymentDueDay || 5)
+    const [monthlyPrice, setMonthlyPrice] = useState(initialMonthlyPrice ?? '')
+    const [dueDay, setDueDay] = useState(initialPaymentDueDay ?? '')
     const [planStartDate, setPlanStartDate] = useState(initialPlanStartDate || '')
     const [isPending, startTransition] = useTransition()
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
@@ -32,8 +32,8 @@ export function PaymentConfigForm({
         startTransition(async () => {
             const result = await setPatientPaymentModel(patientId, {
                 paymentModel,
-                monthlyPlanPrice: paymentModel === 'MONTHLY_PLAN' ? monthlyPrice : undefined,
-                paymentDueDay: paymentModel === 'MONTHLY_PLAN' ? dueDay : undefined,
+                monthlyPlanPrice: paymentModel === 'MONTHLY_PLAN' && monthlyPrice ? Number(monthlyPrice) : undefined,
+                paymentDueDay: paymentModel === 'MONTHLY_PLAN' && dueDay ? Number(dueDay) : undefined,
                 planStartDate: paymentModel === 'MONTHLY_PLAN' && planStartDate ? planStartDate : undefined,
             })
 

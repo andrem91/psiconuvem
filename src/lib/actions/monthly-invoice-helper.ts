@@ -45,8 +45,13 @@ export async function ensureMonthlyInvoice(patientId: string, appointmentDate: D
     return { success: true, message: 'Fatura já existe para este mês' }
   }
 
+  // Verificar se paciente tem dia de vencimento configurado
+  if (!patient.paymentDueDay) {
+    return { success: false, error: 'Paciente sem dia de vencimento configurado' }
+  }
+
   // Calcular data de vencimento
-  const dueDay = patient.paymentDueDay || 5
+  const dueDay = patient.paymentDueDay
   let dueDate = new Date(appointmentDate.getFullYear(), appointmentDate.getMonth(), dueDay)
   
   // Se o dia de vencimento já passou, usar próximo mês
@@ -61,7 +66,7 @@ export async function ensureMonthlyInvoice(patientId: string, appointmentDate: D
       psychologistId,  // Agora garantido como string
       patientId,
       referenceMonth: referenceMonthStr,
-      amount: patient.monthlyPlanPrice || 600,
+      amount: patient.monthlyPlanPrice,
       dueDate: dueDate.toISOString().split('T')[0],
       status: 'PENDING',
     }] as any)
