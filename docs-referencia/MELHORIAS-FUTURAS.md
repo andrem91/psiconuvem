@@ -48,6 +48,19 @@ Campo de texto livre para observações gerais sobre o paciente.
 
 ---
 
+### 5. Botão WhatsApp na Página do Paciente
+
+**Prioridade**: 🟡 Média | **Esforço**: ⚡ Pequeno (1h)
+
+Adicionar botão dedicado "Enviar WhatsApp" na página de detalhes do paciente.
+
+**Implementação:**
+- Botão com ícone do WhatsApp nas Ações Rápidas
+- Link para `https://wa.me/55TELEFONE` (formatar número sem espaços/caracteres)
+- Mensagem pré-formatada: "Olá! Sou [Nome Psicólogo] do PsicoNuvem..."
+
+---
+
 ## 🎯 Agenda - Melhorias UX
 
 ### 0. Detalhes do Agendamento - Futuro

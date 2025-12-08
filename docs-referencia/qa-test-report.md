@@ -11,9 +11,9 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 44 |
-| ✅ Passou | 44 (100%) |
-| ⚠️ A Verificar | 0 (0%) |
+| Cenários Testados | 48 |
+| ✅ Passou | 47 (98%) |
+| ⚠️ A Verificar | 1 (2%) |
 | ❌ Falhou | 0 (0%) |
 
 ---
