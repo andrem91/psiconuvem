@@ -11,9 +11,9 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 30 |
-| ✅ Passou | 30 (100%) |
-| ⚠️ A Verificar | 0 (0%) |
+| Cenários Testados | 32 |
+| ✅ Passou | 31 (97%) |
+| ⚠️ A Verificar | 1 (3%) |
 | ❌ Falhou | 0 (0%) |
 
 ---
@@ -131,9 +131,14 @@
 
 ### Financeiro
 - [x] Marcar sessão como paga
-- [ ] Paciente mensalista
+- [ ] Paciente mensalista (NÃO IMPLEMENTADO)
 - [ ] Sessão extra (billAsSession)
 - [ ] Filtro por período
+
+### Status de Agendamento
+- [x] Cancelar agendamento (botão funciona)
+- [x] Não compareceu (botão funciona)
+- ⚠️ Badge UI não atualiza imediatamente (BUG-003)
 
 ### Segurança
 - [ ] Multi-tenancy (RLS)
