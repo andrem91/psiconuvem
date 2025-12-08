@@ -191,7 +191,7 @@ export async function updatePatient(
     redirect(`/dashboard/pacientes/${id}`)
 }
 
-// Deletar paciente
+// Deletar paciente (com cascade para agendamentos e pagamentos)
 export async function deletePatient(id: string): Promise<{ success: boolean; error?: string }> {
     const psychologistId = await getCurrentPsychologistId()
     const supabase = await createClient()
@@ -202,16 +202,72 @@ export async function deletePatient(id: string): Promise<{ success: boolean; err
         return { success: false, error: 'Paciente não encontrado ou acesso negado' }
     }
 
+    const now = new Date().toISOString()
+
     try {
+        // 1. Cancelar agendamentos FUTUROS (soft-delete)
+        // Mantém agendamentos passados para histórico
+        const { error: appointmentsError } = await supabase
+            .from('Appointment')
+            .update({ 
+                deletedAt: now,
+                status: 'CANCELLED',
+                updatedAt: now 
+            })
+            .eq('patientId', id)
+            .eq('psychologistId', psychologistId)
+            .gte('scheduledAt', now) // Apenas futuros
+            .is('deletedAt', null)
+
+        if (appointmentsError) {
+            console.error('Erro ao cancelar agendamentos:', appointmentsError)
+        }
+
+        // 2. Cancelar pagamentos PENDENTES de sessões futuras
+        // Mantém pagamentos já realizados (histórico contábil)
+        const { error: paymentsError } = await supabase
+            .from('Appointment')
+            .update({ 
+                paymentStatus: 'CANCELLED',
+                updatedAt: now 
+            })
+            .eq('patientId', id)
+            .eq('psychologistId', psychologistId)
+            .in('paymentStatus', ['PENDING', 'OVERDUE'])
+            .is('deletedAt', null)
+
+        if (paymentsError) {
+            console.error('Erro ao cancelar pagamentos:', paymentsError)
+        }
+
+        // 3. Cancelar faturas mensais PENDENTES
+        const { error: invoicesError } = await supabase
+            .from('MonthlyInvoice')
+            .update({ 
+                status: 'CANCELLED',
+                updatedAt: now 
+            })
+            .eq('patientId', id)
+            .eq('psychologistId', psychologistId)
+            .in('status', ['PENDING', 'OVERDUE'])
+            .is('deletedAt', null)
+
+        if (invoicesError) {
+            console.error('Erro ao cancelar faturas:', invoicesError)
+        }
+
+        // 4. Soft-delete do paciente
         const { error } = await supabase
             .from('Patient')
-            .update({ deletedAt: new Date().toISOString() })
+            .update({ deletedAt: now, updatedAt: now })
             .eq('id', id)
             .eq('psychologistId', psychologistId)
 
         if (error) throw error
         
         revalidatePath('/dashboard/pacientes')
+        revalidatePath('/dashboard/agenda')
+        revalidatePath('/dashboard/financeiro')
         return { success: true }
     } catch (error) {
         console.error('Erro ao deletar paciente:', error)

@@ -25,7 +25,8 @@ export function DeletePatientButton({ id, name }: DeletePatientButtonProps) {
             const result = await deletePatient(id)
 
             if (result.success) {
-                router.refresh()
+                // Redirecionar para lista de pacientes (evita 404)
+                router.push('/dashboard/pacientes')
             } else {
                 alert(result.error || 'Erro ao excluir paciente')
                 setIsDeleting(false)
