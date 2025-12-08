@@ -11,8 +11,8 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 36 |
-| ✅ Passou | 36 (100%) |
+| Cenários Testados | 40 |
+| ✅ Passou | 40 (100%) |
 | ⚠️ A Verificar | 0 (0%) |
 | ❌ Falhou | 0 (0%) |
 
@@ -141,11 +141,11 @@
 ### Segurança (✅ Verificado via Análise de Código)
 - [x] Multi-tenancy (RLS) - 8 tabelas com 30 policies
 - [x] Proteção de rotas (middleware usa getUser())
-- [ ] Injeção SQL/XSS (Prisma/Supabase previne por padrão)
+- [x] XSS Prevention - script exibido como texto, não executado
 
-### Performance
-- [ ] Tempo de carregamento
-- [ ] Paginação de listas
+### Performance (✅ Testado)
+- [x] Tempo de carregamento - todas páginas < 2s
+- [ ] Paginação de listas (não implementado)
 
 ---
 
