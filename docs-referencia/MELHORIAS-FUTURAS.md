@@ -429,6 +429,27 @@ Via Supabase Auth MFA (já suporta nativamente) ou TOTP (Google Authenticator).
 
 ---
 
+### 14. Recuperação de Senha (Esqueci Minha Senha)
+
+**Prioridade**: 🔥 Alta | **Esforço**: ⚡ Pequeno (2-4h)
+
+Adicionar link "Esqueci minha senha" na página de login.
+
+**Implementação:**
+- Link na página de login para `/esqueci-senha`
+- Formulário com campo de email
+- Usar `supabase.auth.resetPasswordForEmail(email)`
+- Página de reset com formulário de nova senha
+- Usar `supabase.auth.updateUser({ password })`
+
+**Fluxo:**
+1. Usuário clica "Esqueci minha senha"
+2. Digita email
+3. Recebe link por email (via Supabase)
+4. Clica no link e define nova senha
+
+---
+
 ### 14. Backup Automático
 
 **Prioridade**: 🔥 Alta | **Esforço**: ⚡ Pequeno (2h)
