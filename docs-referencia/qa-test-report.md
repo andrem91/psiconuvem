@@ -11,8 +11,8 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 73 |
-| ✅ Passou | 69 (95%) |
+| Cenários Testados | 74 |
+| ✅ Passou | 70 (95%) |
 | ⚠️ Não Implementado | 4 (5%) |
 | ❌ Bugs | 0 (0%) |
 
@@ -35,6 +35,7 @@
 | Cenário | Status |
 |---------|--------|
 | Página de listagem carrega | ✅ |
+| **Busca por nome** | ✅ |
 | Formulário de novo paciente | ✅ |
 | Campos: nome, telefone, email | ✅ |
 | LGPD consent registrado | ✅ |

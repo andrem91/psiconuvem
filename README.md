@@ -30,6 +30,7 @@
 
 ### Gestão de Pacientes ✅
 - CRUD completo com soft delete
+- **Busca por nome** em tempo real
 - Consentimento LGPD com registro de IP
 - Status: Ativo/Inativo/Arquivado
 - Histórico de consultas e pagamentos
