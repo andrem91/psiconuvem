@@ -315,6 +315,7 @@ export async function updateAppointmentStatus(
     if (error) throw error
 
     revalidatePath('/dashboard/agenda')
+    revalidatePath(`/dashboard/agenda/${appointmentId}`)
     return { success: true }
   } catch (error) {
     console.error('Erro ao atualizar status:', error)
