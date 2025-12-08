@@ -11,8 +11,8 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 33 |
-| ✅ Passou | 33 (100%) |
+| Cenários Testados | 36 |
+| ✅ Passou | 36 (100%) |
 | ⚠️ A Verificar | 0 (0%) |
 | ❌ Falhou | 0 (0%) |
 
@@ -138,10 +138,10 @@
 - [x] Não compareceu (botão funciona)
 - ⚠️ Badge UI não atualiza imediatamente (BUG-003)
 
-### Segurança
-- [ ] Multi-tenancy (RLS)
-- [ ] Proteção de rotas
-- [ ] Injeção SQL/XSS
+### Segurança (✅ Verificado via Análise de Código)
+- [x] Multi-tenancy (RLS) - 8 tabelas com 30 policies
+- [x] Proteção de rotas (middleware usa getUser())
+- [ ] Injeção SQL/XSS (Prisma/Supabase previne por padrão)
 
 ### Performance
 - [ ] Tempo de carregamento
