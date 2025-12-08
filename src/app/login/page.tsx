@@ -37,7 +37,7 @@ export default function LoginPage() {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
-                                required
+                                defaultValue={state.values?.email || ''}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="seu@email.com"
                             />
@@ -55,7 +55,6 @@ export default function LoginPage() {
                                 name="password"
                                 type="password"
                                 autoComplete="current-password"
-                                required
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="••••••••"
                             />

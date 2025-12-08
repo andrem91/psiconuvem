@@ -32,7 +32,7 @@ export function CreatePatientForm() {
                             type="text"
                             name="name"
                             id="name"
-                            required
+                            defaultValue={state.values?.name || ''}
                             placeholder="Ex: Maria Silva Santos"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
@@ -50,6 +50,7 @@ export function CreatePatientForm() {
                             type="email"
                             name="email"
                             id="email"
+                            defaultValue={state.values?.email || ''}
                             placeholder="paciente@email.com"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
@@ -67,7 +68,7 @@ export function CreatePatientForm() {
                             type="tel"
                             name="phone"
                             id="phone"
-                            required
+                            defaultValue={state.values?.phone || ''}
                             placeholder="(11) 98765-4321"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
@@ -86,6 +87,7 @@ export function CreatePatientForm() {
                             type="date"
                             name="birthdate"
                             id="birthdate"
+                            defaultValue={state.values?.birthdate || ''}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                     </div>

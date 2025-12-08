@@ -16,6 +16,11 @@ export type AuthState = {
     crp?: string[]
     _form?: string[]
   }
+  values?: {
+    name?: string
+    email?: string
+    crp?: string
+  }
   success?: boolean
   message?: string
 }
@@ -60,15 +65,20 @@ async function generateUniqueSlug(name: string, supabaseAdmin: any): Promise<str
 
 export async function register(prevState: AuthState, formData: FormData): Promise<AuthState> {
   // 1. Validação Zod
-  const validatedFields = registerSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    crp: formData.get('crp'),
-  })
+  const rawValues = {
+    name: formData.get('name')?.toString() || '',
+    email: formData.get('email')?.toString() || '',
+    password: formData.get('password')?.toString() || '',
+    crp: formData.get('crp')?.toString() || '',
+  }
+
+  const validatedFields = registerSchema.safeParse(rawValues)
 
   if (!validatedFields.success) {
-    return { errors: validatedFields.error.flatten().fieldErrors }
+    return { 
+      errors: validatedFields.error.flatten().fieldErrors,
+      values: { name: rawValues.name, email: rawValues.email, crp: rawValues.crp }
+    }
   }
 
   const { name, email, password, crp } = validatedFields.data
@@ -168,13 +178,19 @@ export async function register(prevState: AuthState, formData: FormData): Promis
 }
 
 export async function login(prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const rawEmail = formData.get('email')?.toString() || ''
+  const rawPassword = formData.get('password')?.toString() || ''
+
   const validatedFields = loginSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email: rawEmail,
+    password: rawPassword,
   })
 
   if (!validatedFields.success) {
-    return { errors: validatedFields.error.flatten().fieldErrors }
+    return { 
+      errors: validatedFields.error.flatten().fieldErrors,
+      values: { email: rawEmail }
+    }
   }
 
   const supabase = await createClient()
@@ -184,7 +200,10 @@ export async function login(prevState: AuthState, formData: FormData): Promise<A
   })
 
   if (error) {
-    return { errors: { _form: ['Email ou senha incorretos.'] } }
+    return { 
+      errors: { _form: ['Email ou senha incorretos.'] },
+      values: { email: rawEmail }
+    }
   }
 
   redirect('/dashboard')

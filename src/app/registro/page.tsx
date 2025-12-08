@@ -48,6 +48,7 @@ export default function RegistroPage() {
                                 name="name"
                                 type="text"
                                 autoComplete="name"
+                                defaultValue={state.values?.name || ''}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Dra. Maria Silva"
                             />
@@ -65,6 +66,7 @@ export default function RegistroPage() {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
+                                defaultValue={state.values?.email || ''}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="seu@email.com"
                             />
@@ -81,6 +83,7 @@ export default function RegistroPage() {
                                 id="crp"
                                 name="crp"
                                 type="text"
+                                defaultValue={state.values?.crp || ''}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="06/123456"
                             />

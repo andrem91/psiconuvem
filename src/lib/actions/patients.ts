@@ -17,6 +17,13 @@ export type PatientState = {
         lgpdConsent?: string[]
         _form?: string[]
     }
+    values?: {
+        name?: string
+        email?: string
+        phone?: string
+        birthdate?: string
+        lgpdConsent?: boolean
+    }
     success?: boolean
     message?: string
 }
@@ -74,17 +81,26 @@ export async function createPatient(
     const psychologistId = await getCurrentPsychologistId()
     const supabase = await createClient()
 
-    const validatedFields = patientSchema.safeParse({
-        name: formData.get('name'),
-        email: formData.get('email') || undefined,
-        phone: formData.get('phone'),
-        birthdate: formData.get('birthdate') || undefined,
+    const rawValues = {
+        name: formData.get('name')?.toString() || '',
+        email: formData.get('email')?.toString() || '',
+        phone: formData.get('phone')?.toString() || '',
+        birthdate: formData.get('birthdate')?.toString() || '',
         lgpdConsent: formData.get('lgpdConsent') === 'on',
+    }
+
+    const validatedFields = patientSchema.safeParse({
+        name: rawValues.name,
+        email: rawValues.email || undefined,
+        phone: rawValues.phone,
+        birthdate: rawValues.birthdate || undefined,
+        lgpdConsent: rawValues.lgpdConsent,
     })
 
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
+            values: rawValues,
         }
     }
 
