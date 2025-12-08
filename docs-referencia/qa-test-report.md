@@ -11,8 +11,8 @@
 | Métrica | Valor |
 |---------|-------|
 | Total de Cenários | 90 (planejados) |
-| Cenários Testados | 29 |
-| ✅ Passou | 29 (100%) |
+| Cenários Testados | 30 |
+| ✅ Passou | 30 (100%) |
 | ⚠️ A Verificar | 0 (0%) |
 | ❌ Falhou | 0 (0%) |
 
@@ -125,7 +125,7 @@
 
 ### Agenda
 - [x] Conflito de horários
-- [ ] Reagendamento
+- [x] Reagendamento
 - [x] Sessão online com Google Meet
 - [x] Telepsicologia consent
 
